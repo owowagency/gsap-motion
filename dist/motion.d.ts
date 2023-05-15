@@ -7,9 +7,9 @@ export type MotionParams = {
 export type MotionWatchResizeAxis = "vertical" | "horizontal";
 export type MotionWatchResizeTargetWithAxis = [HTMLElement | string, MotionWatchResizeAxis];
 export type MotionWatchResizeTarget = HTMLElement | string | MotionWatchResizeTargetWithAxis;
-export type MotionCleanup = () => any;
-export type MotionImplementation<T extends Record<string, any> = Record<string, any>> = (self: Motion<T>) => MotionCleanup | void | undefined;
-export declare class Motion<Meta extends Record<string, any> = Record<string, any>> {
+export type MotionCleanup = () => void;
+export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (self: Motion<T>) => MotionCleanup | void | undefined;
+export declare class Motion<Meta extends Record<string, unknown> = Record<string, unknown>> {
     static readonly resetDebounceTime = 100;
     /** Target framerate */
     static readonly referenceFramerate = 60;
@@ -31,7 +31,7 @@ export declare class Motion<Meta extends Record<string, any> = Record<string, an
     static applyDeltaRatio(value: number): number;
     private mediaQueryList?;
     motionResizeObserver?: MotionResizeObserver;
-    meta: Meta & Record<string, any>;
+    meta: Meta & Record<string, unknown>;
     private subscriptions;
     private create?;
     private cleanup?;

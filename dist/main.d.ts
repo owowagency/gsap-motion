@@ -1,2 +1,1 @@
-export * from "./motion";
-export * from "./pointer";
+export * from './index'
