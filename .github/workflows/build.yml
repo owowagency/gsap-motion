@@ -13,8 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  update_wiki:
-    name: "Update wiki"
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,31 +28,23 @@ jobs:
           echo "command=install" >> $GITHUB_OUTPUT
           echo "runner=yarn" >> $GITHUB_OUTPUT
           exit 0
+
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-      - name: Clone wiki repository
-        run: |
-          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git wiki
-      - name: "Generate wiki"
+
+      - name: Build
+        run: yarn build
+
+      - name: Update wiki
         run: |
           yarn generate-docs --out temp_wiki
+          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git wiki
           cd wiki
-          echo 'CURRENT FILES'
-          ls -l
-          echo 'REMOVE CURRENT'
           rm -rf *
-          ls -l
-          git status
-          echo 'COPY NEW FILES'
           cd ..
           cp -R temp_wiki/* wiki
-          cd wiki
-          ls -l
-          git status
           git config user.name $GITHUB_ACTOR
           git config user.email $GITHUB_ACTOR@users.noreply.github.com
-          echo 'CREATE NEW COMMIT'
           git add .
-          git status
           git commit -m "Update documentation"
           git push
