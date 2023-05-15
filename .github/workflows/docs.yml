@@ -45,7 +45,9 @@ jobs:
           ls -l
           git status
           echo 'COPY NEW FILES'
-          cp -R ../temp_wiki/* ./
+          cd ..
+          cp -R temp_wiki/ wiki
+          cd wiki
           ls -l
           git status
           git config user.name $GITHUB_ACTOR
