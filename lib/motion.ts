@@ -10,45 +10,76 @@ export type MotionParams = {
 };
 
 export type MotionWatchResizeAxis = "vertical" | "horizontal";
-export type MotionWatchResizeTargetWithAxis = [
-  HTMLElement | string,
-  MotionWatchResizeAxis
-];
-export type MotionWatchResizeTarget =
-  | HTMLElement
-  | string
-  | MotionWatchResizeTargetWithAxis;
+export type MotionWatchResizeTargetWithAxis = [HTMLElement | string, MotionWatchResizeAxis];
+export type MotionWatchResizeTarget = HTMLElement | string | MotionWatchResizeTargetWithAxis;
 export type MotionCleanup = () => any;
-export type MotionImplementation = (
-  self: Motion
+export type MotionImplementation<T extends Record<string, any> = Record<string, any>> = (
+  self: Motion<T>
 ) => MotionCleanup | void | undefined;
 
 export class Motion<Meta extends Record<string, any> = Record<string, any>> {
   static readonly resetDebounceTime = 100;
-  static readonly referenceFrameRate = 60;
-  static readonly referenceFrameTime = 1000 / this.referenceFrameRate;
-  static normalizeToDeltaRatio(value: number) {
-    return value * gsap.ticker.deltaRatio(this.referenceFrameRate);
+
+  /** Target framerate */
+  static readonly referenceFramerate = 60;
+
+  /**
+   * Time between frames in milliseconds based on `Motion.referenceFrameRate`.
+   */
+  static get referenceFrameTime() {
+    return 1000 / this.referenceFramerate;
   }
 
-  label?: string;
-  subscriptions: Subscription[] = [];
-  mediaQueryList?: MediaQueryList;
-  motionResizeObserver?: MotionResizeObserver;
-  meta = {} as Meta;
+  /**
+   * Multiplies a given `value` by the current gsap ticker's delta ratio,
+   * so the rate of change will always be consistent even if the frame rate fluctuates.
+   *
+   * Implements `gsap.ticker.deltaRatio()`
+   *
+   * @param value Value to multiply by delta ratio.
+   * @example
+   * // move `myObject` by 3 points on every tick.
+   * myObject.x += Motion.applyDeltaRatio(3)
+   */
+  static applyDeltaRatio(value: number) {
+    return value * gsap.ticker.deltaRatio(this.referenceFramerate);
+  }
 
+  private mediaQueryList?: MediaQueryList;
+  motionResizeObserver?: MotionResizeObserver;
+  meta = {} as Meta & Record<string, any>;
+
+  private subscriptions: Subscription[] = [];
   private create?: MotionImplementation;
   private cleanup?: MotionCleanup;
 
-  constructor(create: MotionImplementation, params: MotionParams = {}) {
+  /**
+   * @example
+   * // create a motion controller for a staggered text lines animation
+   * const splitTextMotion = new Motion(
+   *  () => {
+   *    const splitText = new SplitText("my-text", { type: "lines" });
+   *    const tween = gsap.fromTo(splitText.lines, { opacity: 0 }, { opacity: 1, stagger: 0.1 });
+   *
+   *    // return a cleanup function
+   *    return () => {
+   *      tween.revert().kill();
+   *      splitText.revert();
+   *    }
+   *  },
+   *  {
+   *    shouldResetOnResize: [document.body, "horizontal"]
+   *  }
+   * )
+   */
+  constructor(create: MotionImplementation<Meta>, params: MotionParams = {}) {
     this.observeMedia(params.watchMedia);
     this.observeResize(params.shouldResetOnResize);
 
     this.create = () => {
-      const shouldCreate = [
-        params.enable?.() ?? true,
-        this.mediaQueryList?.matches ?? true,
-      ].every(Boolean);
+      const shouldCreate = [params.enable?.() ?? true, this.mediaQueryList?.matches ?? true].every(
+        Boolean
+      );
       const cleanup = shouldCreate ? create(this) : undefined;
       return cleanup;
     };
@@ -61,9 +92,7 @@ export class Motion<Meta extends Record<string, any> = Record<string, any>> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.mediaQueryList = matchMedia(queryString);
-    this.subscriptions.push(
-      fromEvent(this.mediaQueryList, "change").subscribe(() => this.reset())
-    );
+    this.subscriptions.push(fromEvent(this.mediaQueryList, "change").subscribe(() => this.reset()));
   }
 
   private observeResize(target?: MotionWatchResizeTarget) {
@@ -72,12 +101,13 @@ export class Motion<Meta extends Record<string, any> = Record<string, any>> {
     // @ts-ignore
     this.motionResizeObserver = new MotionResizeObserver(target);
     this.subscriptions.push(
-      this.motionResizeObserver.observable
-        .pipe(debounceTime(500))
-        .subscribe(() => this.reset())
+      this.motionResizeObserver.observable.pipe(debounceTime(500)).subscribe(() => this.reset())
     );
   }
 
+  /**
+   * Runs the cleanup function and resets this Motion instance.
+   */
   reset = debounce(
     () => {
       this.cleanup?.();
@@ -89,6 +119,9 @@ export class Motion<Meta extends Record<string, any> = Record<string, any>> {
     { leading: true }
   );
 
+  /**
+   * Runs the cleanup function and makes this instance elegible for garbage collection.
+   */
   destroy = () => {
     this.cleanup?.();
     this.cleanup = undefined;
@@ -109,8 +142,7 @@ class MotionResizeObserver {
 
   constructor(target: MotionWatchResizeTarget) {
     const [element, axis] = [target].flat() as MotionWatchResizeTargetWithAxis;
-    this.element =
-      typeof element === "string" ? document.querySelector(element) : element;
+    this.element = typeof element === "string" ? document.querySelector(element) : element;
     this.axis = axis;
 
     this.observable = new Observable<ResizeObserverEntry[]>((subscriber) => {
