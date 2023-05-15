@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "generate-docs": "echo 'hello'"
+    "generate-docs": "typedoc --plugin typedoc-plugin-markdown --out .github/wiki lib/main.ts"
   },
   "devDependencies": {
     "typedoc": "^0.24.7",
