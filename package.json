@@ -3,6 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    "./motion": {
+      "import": "./dist/motion.js",
+      "require": "./dist/motion.cjs"
+    },
+    "./pointer": {
+      "import": "./dist/pointer.js",
+      "require": "./dist/pointer.cjs"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
