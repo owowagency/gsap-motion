@@ -1,6 +1,6 @@
 {
   "name": "@owowagency/gsap-motion",
-  "version": "0.0.1",
+  "version": "0.0.0-development",
   "type": "module",
   "exports": {
     "./motion": {
@@ -16,9 +16,12 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "generate-docs": "typedoc"
+    "generate-docs": "typedoc",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
+    "semantic-release": "^21.0.2",
+    "semantic-release-cli": "^5.4.4",
     "typedoc": "^0.24.7",
     "typedoc-plugin-markdown": "^3.15.3",
     "typescript": "^5.0.2",
@@ -32,5 +35,9 @@
     "lodash.debounce": "^4.0.8",
     "rxjs": "^7.8.1",
     "typedoc-github-wiki-theme": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/owowagency/gsap-motion.git"
   }
 }
