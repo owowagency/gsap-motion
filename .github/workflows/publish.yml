@@ -30,7 +30,7 @@ jobs:
           exit 0
 
       - name: Install dependencies
-        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build
@@ -49,3 +49,7 @@ jobs:
           git add .
           git commit -m "Update documentation"
           git push
+          cd ..
+
+      - name: Publish
+        run: yarn publish
