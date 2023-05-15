@@ -31,7 +31,7 @@ jobs:
 
       - name: Update wiki
         run: |
-          npm run generate-docs --out temp_wiki
+          npx typedoc --out temp_wiki
           git clone https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/owowagency/gsap-motion.wiki.git wiki
           cd wiki
           rm -rf *
