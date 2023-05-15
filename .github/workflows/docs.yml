@@ -32,6 +32,8 @@ jobs:
         run: |
           echo "ACTION_MAIL=$GITHUB_ACTOR@users.noreply.github.com" >> $GITHUB_ENV
           echo "ACTION_NAME=$GITHUB_ACTOR" >> $GITHUB_ENV
+      - name: "Set default branch main"
+        run: git config --global init.defaultBranch main
       - name: Upload docs to Wiki
         uses: docker://decathlon/wiki-page-creator-action:latest
         env:
