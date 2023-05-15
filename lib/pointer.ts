@@ -12,7 +12,7 @@ export class Pointer {
    * and does **not** have to be created using `new Pointer()`_;
    *
    * @example
-   * // Make a custom cursor that copies the current pointer position
+   * // Make a custom cursor that copies the current pointer position.
    * gsap.ticker.add(() => {
    *    gsap.set("#custom-cursor", {
    *      x: Pointer.instance.clientX,
