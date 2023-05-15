@@ -53,6 +53,7 @@ jobs:
           git commit -m "Update documentation"
           git push
           cd ..
+          ls -l
 
       - name: "Release"
         env:
