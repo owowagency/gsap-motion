@@ -33,11 +33,11 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Clone wiki repository
         run: |
-          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git ./.github/wiki
+          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git temp_wiki
       - name: "Generate wiki"
         run: |
           yarn generate-docs
-          cd .github/wiki
+          cd temp_wiki
           ls -l
           git config user.name $GITHUB_ACTOR
           git config user.email $GITHUB_ACTOR@users.noreply.github.com
