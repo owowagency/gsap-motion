@@ -2,22 +2,23 @@ import gsap from "gsap";
 import { fromEvent, Subscription } from "rxjs";
 import { Motion } from "./motion";
 
-/**
- * Utility for doing stuff with the mouse/pointer.
- * Exposes a static singleton `instance` of which only one can be active at any time.
- * @example
- * // Make a custom cursor that copies the current pointer position
- * gsap.ticker.add(() => {
- *    gsap.set("#custom-cursor", {
- *      x: Pointer.instance.clientX,
- *      y: Pointer.instance.clientY
- *    })
- * })
- */
 export class Pointer {
   private static _instance: Pointer;
 
-  /** Get the current singleton Pointer instance */
+  private constructor() {}
+
+  /**
+   * Utility for doing stuff with the mouse/pointer.
+   * Get the current singleton Pointer instance, of which only one can be active at any time.
+   * @example
+   * // Make a custom cursor that copies the current pointer position
+   * gsap.ticker.add(() => {
+   *    gsap.set("#custom-cursor", {
+   *      x: Pointer.instance.clientX,
+   *      y: Pointer.instance.clientY
+   *    })
+   * })
+   */
   static get instance() {
     return (this._instance ??= new Pointer());
   }
