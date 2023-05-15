@@ -38,7 +38,7 @@ jobs:
       - name: Update wiki
         run: |
           yarn generate-docs --out temp_wiki
-          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git wiki
+          git clone https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/owowagency/gsap-motion.wiki.git wiki
           cd wiki
           rm -rf *
           cd ..
@@ -51,8 +51,9 @@ jobs:
           git push
           cd ..
 
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PAT }}
-          NPM_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn publish
