@@ -46,7 +46,7 @@ jobs:
           git status
           echo 'COPY NEW FILES'
           cd ..
-          cp -R temp_wiki/ wiki
+          cp -R temp_wiki/* wiki
           cd wiki
           ls -l
           git status
