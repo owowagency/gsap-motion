@@ -32,10 +32,10 @@ jobs:
         run: |
           echo "ACTION_MAIL=$GITHUB_ACTOR@users.noreply.github.com" >> $GITHUB_ENV
           echo "ACTION_NAME=$GITHUB_ACTOR" >> $GITHUB_ENV
-          echo "OWNER=$GITHUB_ACTOR" >> $GITHUB_ENV
-          echo "REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
       - name: Upload docs to Wiki
         uses: docker://decathlon/wiki-page-creator-action:latest
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
+          OWNER: owowagency
+          REPO_NAME: gsap-motion
           MD_FOLDER: .github/wiki
