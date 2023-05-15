@@ -12,12 +12,12 @@ export type MotionParams = {
 export type MotionWatchResizeAxis = "vertical" | "horizontal";
 export type MotionWatchResizeTargetWithAxis = [HTMLElement | string, MotionWatchResizeAxis];
 export type MotionWatchResizeTarget = HTMLElement | string | MotionWatchResizeTargetWithAxis;
-export type MotionCleanup = () => any;
-export type MotionImplementation<T extends Record<string, any> = Record<string, any>> = (
+export type MotionCleanup = () => void;
+export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (
   self: Motion<T>
 ) => MotionCleanup | void | undefined;
 
-export class Motion<Meta extends Record<string, any> = Record<string, any>> {
+export class Motion<Meta extends Record<string, unknown> = Record<string, unknown>> {
   static readonly resetDebounceTime = 100;
 
   /** Target framerate */
@@ -47,7 +47,7 @@ export class Motion<Meta extends Record<string, any> = Record<string, any>> {
 
   private mediaQueryList?: MediaQueryList;
   motionResizeObserver?: MotionResizeObserver;
-  meta = {} as Meta & Record<string, any>;
+  meta = {} as Meta & Record<string, unknown>;
 
   private subscriptions: Subscription[] = [];
   private create?: MotionImplementation;
@@ -149,7 +149,7 @@ class MotionResizeObserver {
       const resizeObserver = new ResizeObserver((entries) =>
         this.handleResize(entries, subscriber)
       );
-      if (this.element) resizeObserver.observe(this.element!);
+      if (this.element) resizeObserver.observe(this.element);
       return () => resizeObserver.disconnect();
     });
   }
