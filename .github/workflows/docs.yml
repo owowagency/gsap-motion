@@ -31,8 +31,6 @@ jobs:
           exit 0
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-      - name: Generate docs
-        run: yarn generate-docs
       - name: Clone wiki repository
         run: |
           git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git .github/wiki
