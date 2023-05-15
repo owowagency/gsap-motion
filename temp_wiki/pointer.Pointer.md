@@ -35,132 +35,7 @@
 
 • `Private` **new Pointer**()
 
-#### Defined in
-
-[pointer.ts:8](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L8)
-
-## Properties
-
-### clientX
-
-• **clientX**: `number`
-
-Pointer absolute x position
-
-#### Defined in
-
-[pointer.ts:34](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L34)
-
-___
-
-### clientY
-
-• **clientY**: `number`
-
-Pointer absolute y position
-
-#### Defined in
-
-[pointer.ts:36](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L36)
-
-___
-
-### motion
-
-• `Readonly` **motion**: [`Motion`](../wiki/motion.Motion)<{ `label`: `string`  }\>
-
-Internal motion instance
-
-#### Defined in
-
-[pointer.ts:48](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L48)
-
-___
-
-### normalX
-
-• **normalX**: `number` = `0.5`
-
-Pointer normalized x position (0 to 1)
-
-#### Defined in
-
-[pointer.ts:39](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L39)
-
-___
-
-### normalY
-
-• **normalY**: `number` = `0.5`
-
-Pointer normalized y position (0 to 1)
-
-#### Defined in
-
-[pointer.ts:41](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L41)
-
-___
-
-### observable
-
-• `Readonly` **observable**: `Observable`<`MouseEvent`\>
-
-#### Defined in
-
-[pointer.ts:43](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L43)
-
-___
-
-### subscriptions
-
-• `Private` **subscriptions**: `Subscription`[] = `[]`
-
-#### Defined in
-
-[pointer.ts:26](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L26)
-
-___
-
-### viewHeight
-
-• **viewHeight**: `number` = `window.innerHeight`
-
-Window inner height
-
-#### Defined in
-
-[pointer.ts:31](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L31)
-
-___
-
-### viewWidth
-
-• **viewWidth**: `number` = `window.innerWidth`
-
-Window inner width
-
-#### Defined in
-
-[pointer.ts:29](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L29)
-
-___
-
-### \_instance
-
-▪ `Static` `Private` **\_instance**: [`Pointer`](../wiki/pointer.Pointer)
-
-#### Defined in
-
-[pointer.ts:6](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L6)
-
-## Accessors
-
-### instance
-
-• `Static` `get` **instance**(): [`Pointer`](../wiki/pointer.Pointer)
-
 Utility for doing stuff with the mouse/pointer.
-Get the current singleton Pointer instance, of which only one can be active at any time.
 
 **`Example`**
 
@@ -174,13 +49,139 @@ gsap.ticker.add(() => {
 })
 ```
 
+#### Defined in
+
+[pointer.ts:20](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L20)
+
+## Properties
+
+### clientX
+
+• **clientX**: `number`
+
+Pointer absolute x position
+
+#### Defined in
+
+[pointer.ts:37](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L37)
+
+___
+
+### clientY
+
+• **clientY**: `number`
+
+Pointer absolute y position
+
+#### Defined in
+
+[pointer.ts:39](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L39)
+
+___
+
+### motion
+
+• `Readonly` **motion**: [`Motion`](../wiki/motion.Motion)<{ `label`: `string`  }\>
+
+Internal motion instance
+
+#### Defined in
+
+[pointer.ts:51](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L51)
+
+___
+
+### normalX
+
+• **normalX**: `number` = `0.5`
+
+Pointer normalized x position (0 to 1)
+
+#### Defined in
+
+[pointer.ts:42](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L42)
+
+___
+
+### normalY
+
+• **normalY**: `number` = `0.5`
+
+Pointer normalized y position (0 to 1)
+
+#### Defined in
+
+[pointer.ts:44](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L44)
+
+___
+
+### observable
+
+• `Readonly` **observable**: `Observable`<`MouseEvent`\>
+
+#### Defined in
+
+[pointer.ts:46](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L46)
+
+___
+
+### subscriptions
+
+• `Private` **subscriptions**: `Subscription`[] = `[]`
+
+#### Defined in
+
+[pointer.ts:29](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L29)
+
+___
+
+### viewHeight
+
+• **viewHeight**: `number` = `window.innerHeight`
+
+Window inner height
+
+#### Defined in
+
+[pointer.ts:34](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L34)
+
+___
+
+### viewWidth
+
+• **viewWidth**: `number` = `window.innerWidth`
+
+Window inner width
+
+#### Defined in
+
+[pointer.ts:32](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L32)
+
+___
+
+### \_instance
+
+▪ `Static` `Private` **\_instance**: [`Pointer`](../wiki/pointer.Pointer)
+
+#### Defined in
+
+[pointer.ts:6](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L6)
+
+## Accessors
+
+### instance
+
+• `Static` `get` **instance**(): [`Pointer`](../wiki/pointer.Pointer)
+
+Get the current singleton Pointer instance.
+
 #### Returns
 
 [`Pointer`](../wiki/pointer.Pointer)
 
 #### Defined in
 
-[pointer.ts:22](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L22)
+[pointer.ts:25](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L25)
 
 ## Methods
 
@@ -197,4 +198,4 @@ Note that referencing `Pointer.instance` will create a new instance.
 
 #### Defined in
 
-[pointer.ts:75](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L75)
+[pointer.ts:78](https://github.com/owowagency/gsap-motion/blob/b906818/lib/pointer.ts#L78)

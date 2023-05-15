@@ -31,7 +31,7 @@
 
 #### Defined in
 
-[motion.ts:15](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L15)
+[motion.ts:15](https://github.com/owowagency/gsap-motion/blob/b906818/lib/motion.ts#L15)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[motion.ts:16](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L16)
+[motion.ts:16](https://github.com/owowagency/gsap-motion/blob/b906818/lib/motion.ts#L16)
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 #### Defined in
 
-[motion.ts:6](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L6)
+[motion.ts:6](https://github.com/owowagency/gsap-motion/blob/b906818/lib/motion.ts#L6)
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 #### Defined in
 
-[motion.ts:12](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L12)
+[motion.ts:12](https://github.com/owowagency/gsap-motion/blob/b906818/lib/motion.ts#L12)
 
 ___
 
@@ -99,7 +99,7 @@ ___
 
 #### Defined in
 
-[motion.ts:14](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L14)
+[motion.ts:14](https://github.com/owowagency/gsap-motion/blob/b906818/lib/motion.ts#L14)
 
 ___
 
@@ -109,4 +109,4 @@ ___
 
 #### Defined in
 
-[motion.ts:13](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L13)
+[motion.ts:13](https://github.com/owowagency/gsap-motion/blob/b906818/lib/motion.ts#L13)
