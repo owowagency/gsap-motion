@@ -37,12 +37,16 @@ jobs:
       - name: "Generate wiki"
         run: |
           yarn generate-docs --out temp_wiki
-          cp -R temp_wiki/* wiki/
           cd wiki
           ls -l
+          rm -rf *
+          ls -l
+          git status
+          cp -R ../temp_wiki/* ./
+          ls -l
+          git status
           git config user.name $GITHUB_ACTOR
           git config user.email $GITHUB_ACTOR@users.noreply.github.com
-          git status
           git add .
           git status
           git commit -m "Update documentation"
