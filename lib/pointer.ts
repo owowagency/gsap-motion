@@ -8,6 +8,9 @@ export class Pointer {
   /**
    * Utility for doing stuff with the mouse/pointer.
    *
+   * _This class exposes a static singleton `instance`,
+   * and does **not** have to be created using `new Pointer()`_;
+   *
    * @example
    * // Make a custom cursor that copies the current pointer position
    * gsap.ticker.add(() => {
@@ -17,7 +20,9 @@ export class Pointer {
    *    })
    * })
    */
-  private constructor() {}
+  private constructor() {
+    return Pointer.instance;
+  }
 
   /**
    * Get the current singleton Pointer instance.
