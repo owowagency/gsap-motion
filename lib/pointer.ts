@@ -5,11 +5,9 @@ import { Motion } from "./motion";
 export class Pointer {
   private static _instance: Pointer;
 
-  private constructor() {}
-
   /**
    * Utility for doing stuff with the mouse/pointer.
-   * Get the current singleton Pointer instance, of which only one can be active at any time.
+   *
    * @example
    * // Make a custom cursor that copies the current pointer position
    * gsap.ticker.add(() => {
@@ -18,6 +16,11 @@ export class Pointer {
    *      y: Pointer.instance.clientY
    *    })
    * })
+   */
+  private constructor() {}
+
+  /**
+   * Get the current singleton Pointer instance.
    */
   static get instance() {
     return (this._instance ??= new Pointer());
