@@ -37,7 +37,7 @@
 
 #### Defined in
 
-[pointer.ts:8](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L8)
+[pointer.ts:8](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L8)
 
 ## Properties
 
@@ -49,7 +49,7 @@ Pointer absolute x position
 
 #### Defined in
 
-[pointer.ts:34](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L34)
+[pointer.ts:34](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L34)
 
 ___
 
@@ -61,7 +61,7 @@ Pointer absolute y position
 
 #### Defined in
 
-[pointer.ts:36](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L36)
+[pointer.ts:36](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L36)
 
 ___
 
@@ -73,7 +73,7 @@ Internal motion instance
 
 #### Defined in
 
-[pointer.ts:48](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L48)
+[pointer.ts:48](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L48)
 
 ___
 
@@ -85,7 +85,7 @@ Pointer normalized x position (0 to 1)
 
 #### Defined in
 
-[pointer.ts:39](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L39)
+[pointer.ts:39](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L39)
 
 ___
 
@@ -97,7 +97,7 @@ Pointer normalized y position (0 to 1)
 
 #### Defined in
 
-[pointer.ts:41](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L41)
+[pointer.ts:41](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L41)
 
 ___
 
@@ -107,7 +107,7 @@ ___
 
 #### Defined in
 
-[pointer.ts:43](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L43)
+[pointer.ts:43](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L43)
 
 ___
 
@@ -117,7 +117,7 @@ ___
 
 #### Defined in
 
-[pointer.ts:26](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L26)
+[pointer.ts:26](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L26)
 
 ___
 
@@ -129,7 +129,7 @@ Window inner height
 
 #### Defined in
 
-[pointer.ts:31](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L31)
+[pointer.ts:31](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L31)
 
 ___
 
@@ -141,7 +141,7 @@ Window inner width
 
 #### Defined in
 
-[pointer.ts:29](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L29)
+[pointer.ts:29](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L29)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[pointer.ts:6](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L6)
+[pointer.ts:6](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L6)
 
 ## Accessors
 
@@ -180,7 +180,7 @@ gsap.ticker.add(() => {
 
 #### Defined in
 
-[pointer.ts:22](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L22)
+[pointer.ts:22](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L22)
 
 ## Methods
 
@@ -197,4 +197,4 @@ Note that referencing `Pointer.instance` will create a new instance.
 
 #### Defined in
 
-[pointer.ts:75](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/pointer.ts#L75)
+[pointer.ts:75](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/pointer.ts#L75)

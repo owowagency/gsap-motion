@@ -79,7 +79,7 @@ const splitTextMotion = new Motion(
 
 #### Defined in
 
-[motion.ts:75](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L75)
+[motion.ts:75](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L75)
 
 ## Properties
 
@@ -89,7 +89,7 @@ const splitTextMotion = new Motion(
 
 #### Defined in
 
-[motion.ts:54](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L54)
+[motion.ts:54](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L54)
 
 ___
 
@@ -99,7 +99,7 @@ ___
 
 #### Defined in
 
-[motion.ts:53](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L53)
+[motion.ts:53](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L53)
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 #### Defined in
 
-[motion.ts:48](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L48)
+[motion.ts:48](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L48)
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 #### Defined in
 
-[motion.ts:50](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L50)
+[motion.ts:50](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L50)
 
 ___
 
@@ -129,7 +129,7 @@ ___
 
 #### Defined in
 
-[motion.ts:49](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L49)
+[motion.ts:49](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L49)
 
 ___
 
@@ -141,7 +141,7 @@ Runs the cleanup function and resets this Motion instance.
 
 #### Defined in
 
-[motion.ts:111](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L111)
+[motion.ts:111](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L111)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[motion.ts:52](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L52)
+[motion.ts:52](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L52)
 
 ___
 
@@ -163,7 +163,7 @@ Target framerate
 
 #### Defined in
 
-[motion.ts:24](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L24)
+[motion.ts:24](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L24)
 
 ___
 
@@ -173,7 +173,7 @@ ___
 
 #### Defined in
 
-[motion.ts:21](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L21)
+[motion.ts:21](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L21)
 
 ## Accessors
 
@@ -189,7 +189,7 @@ Time between frames in milliseconds based on `Motion.referenceFrameRate`.
 
 #### Defined in
 
-[motion.ts:29](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L29)
+[motion.ts:29](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L29)
 
 ## Methods
 
@@ -205,7 +205,7 @@ Runs the cleanup function and makes this instance elegible for garbage collectio
 
 #### Defined in
 
-[motion.ts:125](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L125)
+[motion.ts:125](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L125)
 
 ___
 
@@ -225,7 +225,7 @@ ___
 
 #### Defined in
 
-[motion.ts:90](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L90)
+[motion.ts:90](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L90)
 
 ___
 
@@ -245,7 +245,7 @@ ___
 
 #### Defined in
 
-[motion.ts:98](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L98)
+[motion.ts:98](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L98)
 
 ___
 
@@ -277,4 +277,4 @@ myObject.x += Motion.applyDeltaRatio(3)
 
 #### Defined in
 
-[motion.ts:44](https://github.com/owowagency/gsap-motion/blob/3de8e2b/lib/motion.ts#L44)
+[motion.ts:44](https://github.com/owowagency/gsap-motion/blob/ecd2da1/lib/motion.ts#L44)
