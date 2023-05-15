@@ -1,5 +1,5 @@
 {
-  "name": "owow-gsap-collection",
+  "name": "@owowagency/gsap-motion",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "generate-docs": "typedoc --plugin typedoc-plugin-markdown --out .github/wiki lib/main.ts"
+    "generate-docs": "typedoc --plugin typedoc-plugin-markdown --plugin typedoc-github-wiki-theme --out .github/wiki lib/main.ts"
   },
   "devDependencies": {
     "typedoc": "^0.24.7",
@@ -21,6 +21,7 @@
     "@types/node": "^20.1.3",
     "gsap": "^3.11.5",
     "lodash.debounce": "^4.0.8",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typedoc-github-wiki-theme": "^1.1.0"
   }
 }
