@@ -47,5 +47,6 @@ jobs:
           cd wiki
           git status
           git add .
+          git status
           git commit -m "Update documentation"
           git push
