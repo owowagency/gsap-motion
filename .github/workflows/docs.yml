@@ -40,10 +40,12 @@ jobs:
           git config user.name $GITHUB_ACTOR
           git config user.email $GITHUB_ACTOR@users.noreply.github.com
       - name: Copy documentation markdown files
-        run: cp -R .github/wiki/* wiki/
+        run: |
+          cp -R .github/wiki/* wiki/
       - name: Commit and push changes
         run: |
           cd wiki
+          git status
           git add .
           git commit -m "Update documentation"
           git push
