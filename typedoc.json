@@ -1,0 +1,12 @@
+{
+  "entryPoints": [
+    "lib/Motion.ts",
+    "lib/Pointer.ts",
+  ],
+  "out": ".github/wiki",
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "typedoc-github-wiki-theme"
+  ],
+  "readme": "none"
+}
