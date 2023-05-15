@@ -9,7 +9,7 @@ export class Pointer {
    * Utility for doing stuff with the mouse/pointer.
    *
    * _This class exposes a static singleton `instance`,
-   * and does **not** have to be created using `new Pointer()`_;
+   * and does **not** have to be created using `new Pointer();`_
    *
    * @example
    * // Make a custom cursor that copies the current pointer position.
