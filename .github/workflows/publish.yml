@@ -22,25 +22,16 @@ jobs:
         with:
           node-version: 18.x
           registry-url: https://registry.npmjs.org
-          cache: yarn
-
-      - name: Detect package manager
-        id: detect-package-manager
-        run: |
-          echo "manager=yarn" >> $GITHUB_OUTPUT
-          echo "command=install" >> $GITHUB_OUTPUT
-          echo "runner=yarn" >> $GITHUB_OUTPUT
-          exit 0
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: Update wiki
         run: |
-          yarn generate-docs --out temp_wiki
+          npm run generate-docs --out temp_wiki
           git clone https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/owowagency/gsap-motion.wiki.git wiki
           cd wiki
           rm -rf *
