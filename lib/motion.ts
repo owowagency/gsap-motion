@@ -39,7 +39,7 @@ export class Motion<Meta extends Record<string, any> = Record<string, any>> {
    * @param value Value to multiply by delta ratio.
    * @example
    * // move `myObject` by 3 points on every tick.
-   * myObject.x += Motion.applyDeltaRatio(3)
+   * myObject.x += Motion.applyDeltaRatio(3);
    */
   static applyDeltaRatio(value: number) {
     return value * gsap.ticker.deltaRatio(this.referenceFramerate);
