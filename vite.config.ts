@@ -7,11 +7,8 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: {
-        motion: resolve(__dirname, "lib", "motion.ts"),
-        pointer: resolve(__dirname, "lib", "pointer.ts"),
-      },
-      name: "gsapCollection",
+      entry: resolve(__dirname, "lib/main.ts"),
+      name: "gsapMotion",
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled

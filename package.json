@@ -2,14 +2,15 @@
   "name": "@owowagency/gsap-motion",
   "version": "0.0.0-development",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/gsap-motion.umd.cjs",
+  "module": "./dist/gsap-motion.js",
   "exports": {
-    "./motion": {
-      "import": "./dist/motion.js",
-      "require": "./dist/motion.cjs"
-    },
-    "./pointer": {
-      "import": "./dist/pointer.js",
-      "require": "./dist/pointer.cjs"
+    ".": {
+      "require": "./dist/gsap-motion.umd.cjs",
+      "import": "./dist/gsap-motion.js"
     }
   },
   "scripts": {

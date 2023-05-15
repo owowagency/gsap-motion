@@ -53,7 +53,7 @@ jobs:
           git commit -m "Update documentation"
           git push
           cd ..
-          ls -l
+        continue-on-error: true
 
       - name: "Release"
         env:

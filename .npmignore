@@ -1,8 +1,0 @@
-lib
-src
-.github
-.gitignore
-.prettierrc
-index.html
-vite.config.ts
-yarn-error.log
