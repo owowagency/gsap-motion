@@ -15,10 +15,16 @@ concurrency:
 
 jobs:
   update_wiki:
-    name: "Update wiki"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: spenserblack/actions-wiki@v0.2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate docs
+        run: yarn generate-docs
+      - name: Upload docs to Wiki
+        uses: docker://decathlon/wiki-page-creator-action:latest
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          ACTION_MAIL: ${{ secrets.MAIL }}
+          ACTION_NAME: "Github Actions"
+          OWNER: owowagency
+          REPO_NAME: gsap-motion
+          MD_FOLDER: .github/wiki
