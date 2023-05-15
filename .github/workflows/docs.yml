@@ -22,10 +22,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
+      - name: Detect package manager
+        id: detect-package-manager
+        run: |
+          echo "manager=yarn" >> $GITHUB_OUTPUT
+          echo "command=install" >> $GITHUB_OUTPUT
+          echo "runner=yarn" >> $GITHUB_OUTPUT
+          exit 0
       - name: Install dependencies
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install # will run `yarn install` command
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Generate docs
         run: yarn generate-docs
       - name: Clone wiki repository
