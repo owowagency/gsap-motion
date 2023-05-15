@@ -28,23 +28,18 @@ jobs:
           cmd: install # will run `yarn install` command
       - name: Generate docs
         run: yarn generate-docs
-      - name: "Set environmental variables"
+      - name: Clone wiki repository
         run: |
-          echo "GH_MAIL=$GITHUB_ACTOR@users.noreply.github.com" >> $GITHUB_ENV
-          echo "GH_NAME=$GITHUB_ACTOR" >> $GITHUB_ENV
-      - name: "Set default branch main"
-        run: git config --global init.defaultBranch main
-      # - name: Upload docs to Wiki
-      #   uses: docker://decathlon/wiki-page-creator-action:latest
-      #   env:
-      #     GH_PAT: ${{ secrets.GH_PAT }}
-      #     OWNER: owowagency
-      #     REPO_NAME: gsap-motion
-      #     MD_FOLDER: .github/wiki
-      - name: Upload docs to Wiki
-        uses: Andrew-Chen-Wang/github-wiki-action@v3
-        env:
-          WIKI_DIR: .github/wiki/
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-          GH_MAIL: ${{ github.actor }}@users.noreply.github.com
-          GH_NAME: ${{ github.actor }}
+          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git wiki
+          cd wiki
+          git config user.name $GITHUB_ACTOR
+          git config user.email $GITHUB_ACTOR@users.noreply.github.com
+          git remote rm origin
+      - name: Copy documentation markdown files
+        run: cp -R .github/wiki/* wiki/
+      - name: Commit and push changes
+        run: |
+          cd wiki
+          git add .
+          git commit -m "Update documentation"
+          git push
