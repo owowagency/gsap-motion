@@ -35,16 +35,10 @@ jobs:
         run: yarn generate-docs
       - name: Clone wiki repository
         run: |
-          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git wiki
-          cd wiki
+          git clone https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/owowagency/gsap-motion.wiki.git .github/wiki
           git config user.name $GITHUB_ACTOR
           git config user.email $GITHUB_ACTOR@users.noreply.github.com
-      - name: Copy documentation markdown files
-        run: |
-          cp -R .github/wiki/* wiki/
-      - name: Commit and push changes
-        run: |
-          cd wiki
+          yarn generate-docs
           git status
           git add .
           git status
