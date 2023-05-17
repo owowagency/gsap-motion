@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import { fromEvent, Subscription } from "rxjs";
-import { Motion } from "./motion";
+import { Motion } from "../motion/motion";
 
 export class Pointer {
   private static _instance: Pointer;

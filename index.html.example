@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@owowagency/gsap-motion</title>
+    <title>@owowagency/gsap-motion | FEATURE</title>
   </head>
   <body>
     <div id="app"></div>
-    <script type="module" src="/lib/index.ts"></script>
+    <script type="module" src="./example.ts"></script>
   </body>
 </html>

@@ -25,7 +25,7 @@ export default defineConfig({
       // expose pages for development and examples
       input: {
         main: resolve(__dirname, "index.html"),
-        marquee: resolve(__dirname, "marquee/index.html"),
+        marquee: resolve(__dirname, "lib/marquee/index.html"),
       },
     },
   },
