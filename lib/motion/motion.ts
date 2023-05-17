@@ -48,8 +48,8 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
   private mediaQueryList?: MediaQueryList;
   motionResizeObserver?: MotionResizeObserver;
   meta = {} as Meta & Record<string, unknown>;
+  subscriptions: Subscription[] = [];
 
-  private subscriptions: Subscription[] = [];
   private create?: MotionImplementation;
   private cleanup?: MotionCleanup;
 
