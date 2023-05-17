@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, "src/index.ts"),
+      entry: resolve(__dirname, "lib/index.ts"),
       name: "gsapMotion",
     },
     rollupOptions: {
@@ -20,6 +20,12 @@ export default defineConfig({
         globals: {
           gsap: "gsap",
         },
+      },
+
+      // expose pages for development and examples
+      input: {
+        main: resolve(__dirname, "index.html"),
+        marquee: resolve(__dirname, "lib/marquee/index.html"),
       },
     },
   },

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import gsap from "gsap";
 import { fromEvent, Subscription } from "rxjs";
-import { Motion } from "./motion";
+import { Motion } from "../motion/motion";
 
 export class Pointer {
   private static _instance: Pointer;
@@ -20,9 +21,7 @@ export class Pointer {
    *    })
    * })
    */
-  private constructor() {
-    return Pointer.instance;
-  }
+  private constructor() {}
 
   /**
    * Get the current singleton Pointer instance.
@@ -30,8 +29,6 @@ export class Pointer {
   static get instance() {
     return (this._instance ??= new Pointer());
   }
-
-  private subscriptions: Subscription[] = [];
 
   /** Window inner width */
   viewWidth = window.innerWidth;
@@ -55,7 +52,7 @@ export class Pointer {
    */
   readonly motion = new Motion<{ label: string }>(
     (self) => {
-      this.subscriptions.push(
+      self.subscriptions.push(
         this.observable.subscribe((event) => {
           this.clientX = event.clientX;
           this.clientY = event.clientY;
@@ -64,7 +61,7 @@ export class Pointer {
         })
       );
 
-      this.subscriptions.push(
+      self.subscriptions.push(
         fromEvent(window, "resize").subscribe(() => {
           this.viewWidth = window.innerWidth;
           this.viewHeight = window.innerHeight;
@@ -81,7 +78,6 @@ export class Pointer {
    * Note that referencing `Pointer.instance` will create a new instance.
    */
   destroy = () => {
-    this.subscriptions.forEach((s) => s.unsubscribe());
     this.motion.destroy();
   };
 }
