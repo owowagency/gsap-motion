@@ -17,6 +17,7 @@ const elements = Array.from({ length: 3 }, () => {
     left: -25,
     top: -25,
     borderRadius: "25px",
+    pointerEvents: "none",
   });
 
   fragment.append(el);
