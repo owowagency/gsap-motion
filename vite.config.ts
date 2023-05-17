@@ -21,12 +21,6 @@ export default defineConfig({
           gsap: "gsap",
         },
       },
-
-      // expose pages for development and examples
-      input: {
-        main: resolve(__dirname, "index.html"),
-        marquee: resolve(__dirname, "lib/marquee/index.html"),
-      },
     },
   },
   plugins: [

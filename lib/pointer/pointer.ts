@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import gsap from "gsap";
-import { fromEvent, Subscription } from "rxjs";
+import { fromEvent } from "rxjs";
 import { Motion } from "../motion/motion";
 
 export class Pointer {
