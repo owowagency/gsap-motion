@@ -1,5 +1,6 @@
 import { Marquee } from "./marquee";
 import gsap from "gsap";
+import "../../main.css";
 
 const innerNodes = document.getElementsByClassName("owow-marquee-inner");
 
