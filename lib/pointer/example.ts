@@ -33,13 +33,13 @@ gsap.ticker.add(() => {
     const x = gsap.utils.interpolate(
       gsap.getProperty(el, "x") as number,
       Pointer.instance.clientX,
-      progress
+      progress * gsap.ticker.deltaRatio()
     );
 
     const y = gsap.utils.interpolate(
       gsap.getProperty(el, "y") as number,
       Pointer.instance.clientY,
-      progress
+      progress * gsap.ticker.deltaRatio()
     );
 
     gsap.set(el, { x, y });
