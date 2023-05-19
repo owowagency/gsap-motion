@@ -1,1 +1,0 @@
-import"./main-66113dd8.js";import{M as n,g as r}from"./marquee-357a5ab8.js";const a=document.getElementsByClassName("owow-marquee-inner");new n("h1",{velocity:.001,direction:"scroll",speed:2,onUpdate(o){const s=Math.sin(Math.PI*(o*5));let e=0;for(const t of a)r.set(t,{y:10*s*(e%2===0?1:-1)}),e++}});

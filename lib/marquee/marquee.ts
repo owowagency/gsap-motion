@@ -1,5 +1,5 @@
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { Motion } from "..";
+import { Motion, MotionParams } from "..";
 import gsap from "gsap";
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,13 +11,18 @@ export interface MarqueeSettings {
   speed?: number;
   velocity?: number | ((velocity: number) => number);
   direction?: MarqueeDirection;
+  createDOMContainers?: boolean;
   onUpdate?(progress: number): void;
   onCreated?(): void;
 }
 
 export class Marquee implements MarqueeSettings {
-  static create(target: gsap.DOMTarget | (() => gsap.DOMTarget), settings: MarqueeSettings = {}) {
-    return new Marquee(target, settings);
+  static create(
+    target: gsap.DOMTarget | (() => gsap.DOMTarget),
+    settings: MarqueeSettings = {},
+    motionParams: MotionParams = {}
+  ) {
+    return new Marquee(target, settings, motionParams);
   }
 
   target?: gsap.DOMTarget;
@@ -29,7 +34,11 @@ export class Marquee implements MarqueeSettings {
   onUpdate?(progress: number): void;
   onCreated?(): void;
 
-  constructor(target: gsap.DOMTarget | (() => gsap.DOMTarget), settings: MarqueeSettings = {}) {
+  constructor(
+    target: gsap.DOMTarget | (() => gsap.DOMTarget),
+    settings: MarqueeSettings = {},
+    motionParams: MotionParams = {}
+  ) {
     this.speed = settings.speed ?? 1;
     this.velocity = settings.velocity ?? 0;
     this.direction = settings.direction || "rtl";
@@ -37,96 +46,120 @@ export class Marquee implements MarqueeSettings {
     this.onCreated = settings.onCreated;
     this.target = target instanceof Function ? target() : target;
 
-    this.motion = new Motion(() => {
-      let targetContainer: HTMLElement | null = null;
+    const doCreateDOMContainers =
+      settings.createDOMContainers != undefined ? settings.createDOMContainers : true;
 
-      // get the outer container element
-      if (typeof target === "string") targetContainer = document.querySelector(target);
-      else if (target instanceof HTMLElement) targetContainer = target;
+    this.motion = new Motion(
+      () => {
+        let targetContainer: HTMLElement | null = null;
 
-      const outerContainer = targetContainer?.querySelector<HTMLElement>(".owow-marquee-outer");
-      const innerContainer = outerContainer?.querySelector<HTMLElement>(".owow-marquee-inner");
+        // get the outer container element
+        if (typeof target === "string") targetContainer = document.querySelector(target);
+        else if (target instanceof HTMLElement) targetContainer = target;
 
-      if (!targetContainer || !outerContainer || !innerContainer) {
-        console.error("Invalid marquee DOM structure", {
-          targetContainer,
-          outerContainer,
-          innerContainer,
-        });
-        return;
-      }
+        const outerContainer = doCreateDOMContainers
+          ? document.createElement("div")
+          : targetContainer?.querySelector<HTMLElement>(".owow-marquee-outer");
+        outerContainer?.classList.add("owow-marquee-outer");
 
-      gsap.set(innerContainer, { display: "inline-flex" });
+        const innerContainer = doCreateDOMContainers
+          ? document.createElement("div")
+          : outerContainer?.querySelector<HTMLElement>(".owow-marquee-inner");
+        innerContainer?.classList.add("owow-marquee-inner");
 
-      const targetRect = targetContainer.getBoundingClientRect();
-      const innerRect = innerContainer.getBoundingClientRect();
-      const boundingWidth = targetRect.width + innerRect.width;
-      const clones = document.createDocumentFragment();
-      const clonesArray: HTMLElement[] = [];
-      let contentWidthAcc = innerRect.width;
-
-      while (contentWidthAcc <= boundingWidth) {
-        const clone = innerContainer.cloneNode(true);
-        contentWidthAcc += innerRect.width;
-        clonesArray.push(clone as HTMLElement);
-      }
-
-      clones.append(...clonesArray);
-      outerContainer.append(clones);
-
-      const context = gsap.context(() => {
-        gsap.set(outerContainer, {
-          x: 0,
-          force3D: true,
-          width: contentWidthAcc,
-          display: "flex",
-          flexWrap: "nowrap",
-        });
-      });
-
-      const setX = gsap.utils.pipe(
-        (n: number) => Math.floor(n * 1000) / 1000,
-        gsap.quickSetter(outerContainer, "x", "px") as (n: number) => number
-      );
-
-      const update = gsap.ticker.add((_, deltaTime) => {
-        let direction = 1;
-
-        switch (this.direction) {
-          case "ltr":
-            direction = -1;
-            break;
-          case "rtl":
-            direction = 1;
-            break;
-          case "scroll":
-            direction = this.scrollTrigger.direction ?? 1;
-            break;
-          case "scroll-reverse":
-            direction = -this.scrollTrigger.direction ?? -1;
+        if (!targetContainer || !outerContainer || !innerContainer) {
+          console.error("Invalid marquee DOM structure", {
+            targetContainer,
+            outerContainer,
+            innerContainer,
+          });
+          return;
         }
 
-        const velocity = this.scrollTrigger.getVelocity() ?? 0;
-        const velocityDelta =
-          velocity *
-          (typeof this.velocity === "number" ? this.velocity : this.velocity(velocity)) *
-          deltaTime;
-        const xCurrent = gsap.getProperty(outerContainer, "x") as number;
-        const xDelta = this.speed * gsap.ticker.deltaRatio() * -direction;
-        const xIncrement = xDelta - velocityDelta;
-        const xNext = gsap.utils.wrap(0, -innerRect.width, xCurrent + xIncrement);
-        const progress = gsap.utils.normalize(0, -innerRect.width, xNext);
-        setX(xNext);
-        this.onUpdate?.(progress);
-      });
+        innerContainer.append(...targetContainer.childNodes);
+        outerContainer.append(innerContainer);
+        targetContainer?.append(outerContainer);
 
-      this.onCreated?.();
+        gsap.set(innerContainer, { display: "inline-flex" });
 
-      return () => {
-        context.kill(true);
-        gsap.ticker.remove(update);
-        while (clonesArray.length) clonesArray.pop()?.remove();
-      };
-    });
+        const targetRect = targetContainer.getBoundingClientRect();
+        const innerRect = innerContainer.getBoundingClientRect();
+        const boundingWidth = targetRect.width + innerRect.width;
+        const clones = document.createDocumentFragment();
+        const clonesArray: HTMLElement[] = [];
+        let contentWidthAcc = innerRect.width;
+
+        if (!boundingWidth || !contentWidthAcc) return;
+
+        while (contentWidthAcc <= boundingWidth) {
+          const clone = innerContainer.cloneNode(true);
+          contentWidthAcc += innerRect.width;
+          clonesArray.push(clone as HTMLElement);
+        }
+
+        clones.append(...clonesArray);
+        outerContainer.append(clones);
+
+        const context = gsap.context(() => {
+          gsap.set(outerContainer, {
+            x: 0,
+            force3D: true,
+            width: contentWidthAcc,
+            display: "flex",
+            flexWrap: "nowrap",
+          });
+        });
+
+        const setX = gsap.utils.pipe(
+          (n: number) => Math.floor(n * 1000) / 1000,
+          gsap.quickSetter(outerContainer, "x", "px") as (n: number) => number
+        );
+
+        const update = gsap.ticker.add(() => {
+          const velocity = this.velocity != undefined ? this.scrollTrigger.getVelocity() ?? 0 : 0;
+
+          let direction = 1;
+          let velocityDelta =
+            typeof this.velocity === "number" ? velocity * this.velocity : this.velocity(velocity);
+
+          switch (this.direction) {
+            case "ltr":
+              direction = -1;
+              velocityDelta = -Math.abs(velocityDelta);
+              break;
+            case "rtl":
+              direction = 1;
+              velocityDelta = Math.abs(velocityDelta);
+              break;
+            case "scroll":
+              direction = this.scrollTrigger.direction ?? 1;
+              break;
+            case "scroll-reverse":
+              direction = -(this.scrollTrigger.direction ?? 1);
+              velocityDelta = -velocityDelta;
+          }
+
+          const xCurrent = gsap.getProperty(outerContainer, "x") as number;
+          const xDelta = this.speed * -direction;
+          const xIncrement = (xDelta - velocityDelta) * gsap.ticker.deltaRatio();
+          const xNext = gsap.utils.wrap(0, -innerRect.width, xCurrent + xIncrement);
+          const progress = gsap.utils.normalize(0, -innerRect.width, xNext);
+          setX(xNext);
+          this.onUpdate?.(progress);
+        });
+
+        this.onCreated?.();
+
+        return () => {
+          context.kill(true);
+          gsap.ticker.remove(update);
+          while (clonesArray.length) clonesArray.pop()?.remove();
+        };
+      },
+      {
+        shouldResetOnResize: [document.body, "horizontal"],
+        ...motionParams,
+      }
+    );
   }
 }

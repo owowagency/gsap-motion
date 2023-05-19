@@ -8,24 +8,41 @@
   </head>
   <body>
     <div id="app">
-      <div class="flex flex-col absolute left-0 top-0 p-6">
-        <a href="https://github.com/owowagency/gsap-motion/tree/main/lib/marquee">
-          Source & example
-        </a>
-        <a href="https://github.com/owowagency/gsap-motion/wiki/Marquee">Documentation</a>
+      <div class="flex flex-col gap-8 my-8 p-6">
+        <div class="flex flex-col">
+          <a href="https://github.com/owowagency/gsap-motion/tree/main/lib/marquee">
+            Source & example
+          </a>
+          <a href="https://github.com/owowagency/gsap-motion/wiki/Marquee">Documentation</a>
+        </div>
+
+        <p>Basic left-to-right, right-to-left marquees</p>
+        <h2 class="text-3xl" data-direction="ltr">
+          <div class="inline-flex gap-4 mr-4 owow-sentence"><b>LEFT</b> TO <b>RIGHT</b></div>
+        </h2>
+        <h2 class="text-3xl" data-direction="rtl">
+          <div class="inline-flex gap-4 mr-4 owow-sentence"><b>RIGHT</b> TO <b>LEFT</b></div>
+        </h2>
       </div>
 
-      <div class="h-[150vh] flex flex-col justify-center overflow-x-hidden">
-        <h1 class="text-3xl">
-          <div class="owow-marquee-outer">
-            <div class="owow-marquee-inner">
-              <div class="inline-flex gap-4 mx-4 owow-sentence">
-                <b>OWOW</b>
-                AGENCY
-              </div>
-            </div>
+      <div class="h-[200vh] flex flex-col overflow-x-hidden gap-12">
+        <p class="p-6">Based on scroll direction and/or velocity.</p>
+        <h2 class="text-3xl" data-direction="scroll">
+          <div class="inline-flex gap-4 mr-4 owow-sentence"><b>SCROLL</b> DIRECTION</div>
+        </h2>
+        <h2 class="text-3xl" data-direction="scroll-reverse">
+          <div class="inline-flex gap-4 mr-4 owow-sentence">
+            <b>SCROLL</b> DIRECTION <b>REVERSE</b>
           </div>
-        </h1>
+        </h2>
+        <h2 class="text-3xl" data-direction="scroll" data-velocity="0.01">
+          <div class="inline-flex gap-4 mr-4 owow-sentence"><b>SCROLL</b> VELOCITY</div>
+        </h2>
+        <h2 class="text-3xl" data-direction="scroll-reverse" data-velocity="0.01">
+          <div class="inline-flex gap-4 mr-4 owow-sentence">
+            <b>SCROLL</b> VELOCITY <b>REVERSE</b>
+          </div>
+        </h2>
       </div>
     </div>
     <script type="module" src="./example.ts"></script>
