@@ -9,7 +9,7 @@ export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
 
 export interface MarqueeSettings {
   speed?: number;
-  velocity?: number;
+  velocity?: number | ((velocity: number) => number);
   direction?: MarqueeDirection;
   onUpdate?(progress: number): void;
   onCreated?(): void;
@@ -23,7 +23,7 @@ export class Marquee implements MarqueeSettings {
   target?: gsap.DOMTarget;
   motion: Motion;
   speed: number;
-  velocity: number;
+  velocity: number | ((velocity: number) => number);
   direction: MarqueeDirection;
   scrollTrigger = ScrollTrigger.create({});
   onUpdate?(progress: number): void;
@@ -107,7 +107,10 @@ export class Marquee implements MarqueeSettings {
         }
 
         const velocity = this.scrollTrigger.getVelocity() ?? 0;
-        const velocityDelta = velocity * this.velocity * deltaTime;
+        const velocityDelta =
+          velocity *
+          (typeof this.velocity === "number" ? this.velocity : this.velocity(velocity)) *
+          deltaTime;
         const xCurrent = gsap.getProperty(outerContainer, "x") as number;
         const xDelta = this.speed * gsap.ticker.deltaRatio() * -direction;
         const xIncrement = xDelta - velocityDelta;
