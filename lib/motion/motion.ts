@@ -128,6 +128,7 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
     this.create = undefined;
     this.mediaQueryList = undefined;
     this.motionResizeObserver = undefined;
+    for (const key of Object.keys(this.meta)) delete this.meta[key];
     while (this.subscriptions.length) this.subscriptions.pop()?.unsubscribe();
   };
 }
