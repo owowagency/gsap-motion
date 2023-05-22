@@ -26,3 +26,6 @@ dist-ssr
 # Wiki (auto generated)
 .github/wiki
 wiki
+
+# Storybook
+storybook-static
