@@ -38,8 +38,6 @@ export class MarqueeExample extends LitElement {
         speed: this.speed,
         velocity: this.velocity,
         direction: this.direction,
-        onUpdate: (progress) =>
-          (this.shadowRoot!.querySelector("pre")!.innerText = `progress ${progress}`),
       },
       { shouldResetOnResize: undefined }
     );
@@ -48,18 +46,9 @@ export class MarqueeExample extends LitElement {
   // Render the UI as a function of component state
   render() {
     return html`
-      <div class="flex flex-col gap-4 px-6 fixed left-0 right-0">
-        <p class="text-sm">
-          *Try to set direction 'scroll' or 'scroll-reverse' with 'velocity' > 0.
-        </p>
-        <pre />
-      </div>
-
-      <div class="flex flex-col justify-center h-[150vh]">
-        <h2 id="marquee" class="text-3xl overflow-hidden">
-          <div class="inline-flex flex-nowrap gap-4 mr-4"><b>OWOW</b> AGENCY</div>
-        </h2>
-      </div>
+      <h2 id="marquee" class="text-3xl overflow-hidden">
+        <div class="inline-flex flex-nowrap gap-4 mr-4"><b>OWOW</b> AGENCY</div>
+      </h2>
     `;
   }
 }
