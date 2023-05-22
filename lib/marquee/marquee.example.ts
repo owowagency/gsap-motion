@@ -44,9 +44,12 @@ export class MarqueeExample extends LitElement {
   // Render the UI as a function of component state
   render() {
     return html`
-      <h2 id="marquee" class="text-3xl">
-        <div class="inline-flex flex-nowrap gap-4 mr-4"><b>OWOW</b> AGENCY</div>
-      </h2>
+      <p class="text-sm">*Try to set direction 'scroll' or 'scroll-reverse' with 'velocity' > 0.</p>
+      <div class="flex flex-col justify-center h-[150vh]">
+        <h2 id="marquee" class="text-3xl overflow-hidden">
+          <div class="inline-flex flex-nowrap gap-4 mr-4"><b>OWOW</b> AGENCY</div>
+        </h2>
+      </div>
     `;
   }
 }

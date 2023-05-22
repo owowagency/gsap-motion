@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/web-components";
-import { LitElement, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { Marquee, MarqueeSettings } from "..";
+import { html } from "lit";
+import { MarqueeSettings } from "..";
 
 // More on how to set up stories at: https://storybook.js.org/docs/web-components/writing-stories/introduction
 const meta = {
@@ -15,18 +14,19 @@ const meta = {
     />`;
   },
   argTypes: {
-    speed: { control: "number", defaultValue: 1 },
-    velocity: { control: "number", defaultValue: 0 },
+    speed: { control: "number" },
+    velocity: { control: { type: "range", min: 0, max: 0.1, step: 0.0001 } },
     direction: { control: "select", options: ["rtl", "ltr", "scroll", "scroll-reverse"] },
+  },
+  args: {
+    speed: 1,
+    velocity: 0,
+    direction: "rtl",
   },
 } satisfies Meta<MarqueeSettings>;
 
 export default meta;
-type Story = StoryObj<any>;
+type Story = StoryObj<MarqueeSettings>;
 
 // More on writing stories with args: https://storybook.js.org/docs/web-components/writing-stories/args
-export const Primary: Story = {
-  args: {
-    speed: 1,
-  },
-};
+export const Primary: Story = {};
