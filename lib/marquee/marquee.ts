@@ -186,7 +186,7 @@ export class Marquee extends Motion<MarqueeMeta & Record<string, unknown>> {
         return () => {
           context.kill(true);
           gsap.ticker.remove(update);
-          targetContainer?.replaceWith(motion.meta.sourceDOM);
+          targetContainer?.replaceChildren(...motion.meta.sourceDOM.childNodes);
           while (clonesArray.length) clonesArray.pop()?.remove();
         };
       },
