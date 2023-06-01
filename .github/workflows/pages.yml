@@ -1,4 +1,4 @@
-name: Deploy Storybook to Pages
+name: Pages
 
 permissions:
   contents: read
