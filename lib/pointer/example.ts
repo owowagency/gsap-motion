@@ -1,6 +1,5 @@
 import { Pointer } from "..";
 import gsap from "gsap";
-import "../../main.css";
 
 const fragment = document.createDocumentFragment();
 const elements = Array.from({ length: 3 }, () => {

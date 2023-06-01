@@ -1,1 +1,0 @@
-import"./main-adb7dd93.js";import{M as t}from"./marquee-4e72b3e4.js";for(const e of document.querySelectorAll("h2"))new t(e,{direction:e.dataset.direction,speed:.5,velocity:e.dataset.velocity?parseFloat(e.dataset.velocity):void 0});

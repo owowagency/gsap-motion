@@ -101,7 +101,7 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
     // @ts-ignore
     this.motionResizeObserver = new MotionResizeObserver(target);
     this.subscriptions.push(
-      this.motionResizeObserver.observable.pipe(debounceTime(500)).subscribe(() => this.reset())
+      this.motionResizeObserver.observable.pipe(debounceTime(100)).subscribe(() => this.reset())
     );
   }
 

@@ -63,10 +63,11 @@ export class Marquee extends Motion<MarqueeMeta & Record<string, unknown>> {
     super(
       (motion) => {
         Object.assign(motion.meta, {
-          speed: 1,
-          velocity: 0,
-          direction: "ltr",
-          ...settings,
+          speed: settings.speed ?? 1,
+          velocity: settings.velocity ?? 0,
+          direction: settings.direction || "rtl",
+          onCreated: settings.onCreated,
+          onUpdate: settings.onUpdate,
         });
 
         motion.meta.scrollTrigger = ScrollTrigger.create({});
