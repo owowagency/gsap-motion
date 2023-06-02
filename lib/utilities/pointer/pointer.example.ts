@@ -1,5 +1,5 @@
 import { LitElement, html, unsafeCSS } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { Pointer } from "../..";
 import gsap from "gsap";
 import style from "../../../tailwind.css?inline";
