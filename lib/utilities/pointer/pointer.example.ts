@@ -1,8 +1,8 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Marquee, MarqueeDirection, Pointer } from "..";
+import { Marquee, MarqueeDirection, Pointer } from "../..";
 import gsap from "gsap";
-import style from "../../tailwind.css?inline";
+import style from "../../../tailwind.css?inline";
 
 @customElement("pointer-example")
 export class MarqueeExample extends LitElement {

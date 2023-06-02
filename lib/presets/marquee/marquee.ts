@@ -1,5 +1,5 @@
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { Motion, MotionParams } from "..";
+import { Motion, MotionParams } from "../..";
 import gsap from "gsap";
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +12,7 @@ export interface MarqueeSettings {
   velocity?: number;
   direction?: MarqueeDirection;
   createDOMContainers?: boolean;
+  scrollTrigger?: ScrollTrigger.Vars;
   onUpdate?(progress: number): void;
   onCreated?(): void;
 }
@@ -70,7 +71,7 @@ export class Marquee extends Motion<MarqueeMeta & Record<string, unknown>> {
           onUpdate: settings.onUpdate,
         });
 
-        motion.meta.scrollTrigger = ScrollTrigger.create({});
+        motion.meta.scrollTrigger = ScrollTrigger.create(settings.scrollTrigger ?? {});
 
         let targetContainer: HTMLElement | null = null;
 

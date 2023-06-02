@@ -1,0 +1,39 @@
+import { Canvas, Meta, Title, Primary, Description, Controls, Stories } from "@storybook/blocks";
+import * as MarqueeStories from "./marquee.stories";
+
+<Meta of={MarqueeStories} />
+<Title />
+<Description of={MarqueeStories.Primary} />
+<Canvas of={MarqueeStories.Primary} />
+<Controls story={MarqueeStories.Primary} />
+
+## Example code
+
+```js
+import { Marquee } from "@owowagency/gsap-motion";
+
+/**
+ * A marquee with speed 2, that bases its motion direction on scroll direction,
+ * and responds to scroll gestures with a velocity factor of 0.01.
+ */
+const marquee = new Marquee("#marquee", { speed: 2, velocity: 0.01, direction: "scroll" });
+```
+
+```html
+<h1 id="marquee" class="text-3xl overflow-hidden">
+  <div><b>OWOW</b> AGENCY</div>
+</h1>
+```
+
+```css
+#marquee {
+  overflow: hidden;
+}
+
+#marquee > div {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 1rem;
+  margin-inline-end: 1rem;
+}
+```

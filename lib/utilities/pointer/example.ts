@@ -1,4 +1,4 @@
-import { Pointer } from "..";
+import { Pointer } from "../..";
 import gsap from "gsap";
 
 const fragment = document.createDocumentFragment();

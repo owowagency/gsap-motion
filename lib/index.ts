@@ -1,3 +1,4 @@
-export * from "./motion/motion";
-export * from "./pointer/pointer";
-export * from "./marquee/marquee";
+export * from "./utilities/motion/motion";
+export * from "./utilities/pointer/pointer";
+
+export * from "./presets/marquee/marquee";
