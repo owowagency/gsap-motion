@@ -9,9 +9,17 @@ import * as MarqueeStories from "./marquee.stories";
 
 ## Example code
 
+Simple Example
+
 ```js
 import { Marquee } from "@owowagency/gsap-motion";
 
+const marquee = new Marquee("#marquee");
+```
+
+Advanced example
+
+```js
 /**
  * A marquee with speed 2, that bases its motion direction on scroll direction,
  * and responds to scroll gestures with a velocity factor of 0.01.
@@ -29,11 +37,15 @@ const marquee = new Marquee("#marquee", {
 });
 ```
 
+HTML
+
 ```html
 <h1 id="marquee" class="text-3xl overflow-hidden">
   <div><b>OWOW</b> AGENCY</div>
 </h1>
 ```
+
+CSS
 
 ```css
 #marquee {
