@@ -33,7 +33,8 @@ const meta = {
     },
     onUpdate: {
       control: null,
-      description: 'A function to call every time the marquee updates (on each "tick").',
+      description:
+        'A function to call every time the marquee updates (on each "tick"). A `progress` parameter is passed, which indicates the current marquee cycles progress between `0` and `1`',
       defaultValue: { summary: "undefined" },
     },
     onCreated: {

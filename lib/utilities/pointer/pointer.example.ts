@@ -1,18 +1,20 @@
 import { LitElement, html, unsafeCSS } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { Marquee, MarqueeDirection, Pointer } from "../..";
+import { customElement, property, state } from "lit/decorators.js";
+import { Pointer } from "../..";
 import gsap from "gsap";
 import style from "../../../tailwind.css?inline";
 
 @customElement("pointer-example")
 export class MarqueeExample extends LitElement {
   static styles = [unsafeCSS(style)];
+  chaserCount = 10;
 
-  @property({ type: Number }) speed?: number;
-  @property({ type: Number }) velocity?: number;
-  @property({ type: String }) direction?: MarqueeDirection;
-
-  marquee?: Marquee;
+  @state() private _clientX = 0;
+  @state() private _clientY = 0;
+  @state() private _normalX = 0;
+  @state() private _normalY = 0;
+  @state() private _viewWidth = 0;
+  @state() private _viewHeight = 0;
 
   async connectedCallback() {
     super.connectedCallback();
@@ -24,35 +26,41 @@ export class MarqueeExample extends LitElement {
     this.createChaser();
   }
 
-  disconnectedCallback(): void {
-    this.marquee?.destroy();
-  }
-
   createChaser = async () => {
     await this.updateComplete;
-    const elements = this.shadowRoot?.querySelectorAll("div");
+
+    const elements = this.shadowRoot?.querySelectorAll("div.chaser");
+    const size = 10;
+
     if (!elements) return;
 
     elements.forEach((el) => {
       const color = `rgb(${Array.from({ length: 3 }, () => Math.random() * 255).join(",")})`;
-
       gsap.set(el, {
         position: "fixed",
-        background: `radial-gradient(circle at 25% 25%, white, ${color})`,
-        width: 50,
-        height: 50,
-        left: -25,
-        top: -25,
+        background: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.5), ${color})`,
+        width: size,
+        height: size,
+        left: -size / 2,
+        top: -size / 2,
         borderRadius: "25px",
         pointerEvents: "none",
+        zIndex: 10,
       });
     });
 
     gsap.ticker.add(() => {
       let index = 0;
 
+      this._clientX = Pointer.instance.clientX;
+      this._clientY = Pointer.instance.clientY;
+      this._normalX = Pointer.instance.normalX;
+      this._normalY = Pointer.instance.normalY;
+      this._viewWidth = Pointer.instance.viewWidth;
+      this._viewHeight = Pointer.instance.viewHeight;
+
       for (const el of elements) {
-        const progress = 0.1 + 0.05 * index;
+        const progress = gsap.utils.mapRange(0, elements.length - 1, 0.1, 0.5, index);
 
         const x = gsap.utils.interpolate(
           gsap.getProperty(el, "x") as number,
@@ -69,12 +77,30 @@ export class MarqueeExample extends LitElement {
         gsap.set(el, { x, y });
         index++;
       }
-      Pointer.instance.clientX;
     });
   };
 
   // Render the UI as a function of component state
   render() {
-    return html`${Array.from({ length: 3 }, () => html`<div />`)}`;
+    return html`
+      <div class="grid grid-cols-[max-content_1fr] gap-x-4">
+        <p>View size:</p>
+        <p class="font-mono">${this._viewWidth} x ${this._viewHeight}</p>
+
+        <p>Client X:</p>
+        <p class="font-mono">${this._clientX}</p>
+
+        <p>Client Y:</p>
+        <p class="font-mono">${this._clientY}</p>
+
+        <p>Normalized X:</p>
+        <p class="font-mono">${this._normalX}</p>
+
+        <p>Normalized Y:</p>
+        <p class="font-mono">${this._normalY}</p>
+      </div>
+
+      ${Array.from({ length: this.chaserCount }, () => html`<div class="chaser" />`)}
+    `;
   }
 }

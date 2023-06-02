@@ -3,8 +3,16 @@ import { html } from "lit";
 
 // More on how to set up stories at: https://storybook.js.org/docs/web-components/writing-stories/introduction
 const meta = {
-  title: "Pointer",
-  tags: ["autodocs"],
+  title: "utilities/Pointer",
+  parameters: {
+    docs: {
+      source: { code: null },
+      description: {
+        story:
+          "Provides real-time information about the pointer's position in the application's viewport. Useful for motion based on pointer position; pointer chasers and likewise effects.",
+      },
+    },
+  },
   render() {
     return html`<pointer-example />`;
   },

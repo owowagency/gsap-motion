@@ -16,7 +16,17 @@ import { Marquee } from "@owowagency/gsap-motion";
  * A marquee with speed 2, that bases its motion direction on scroll direction,
  * and responds to scroll gestures with a velocity factor of 0.01.
  */
-const marquee = new Marquee("#marquee", { speed: 2, velocity: 0.01, direction: "scroll" });
+const marquee = new Marquee("#marquee", {
+  speed: 2,
+  velocity: 0.01,
+  direction: "scroll",
+  onCreated() {
+    console.log("Created!");
+  },
+  onUpdate(progress) {
+    console.log("tick", progress);
+  },
+});
 ```
 
 ```html
