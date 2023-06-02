@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import gsap from "gsap";
-import { fromEvent } from "rxjs";
+import { Observable, fromEvent } from "rxjs";
 import { Motion } from "../motion/motion";
 
-export class Pointer {
+export class Pointer extends Motion<{ observable?: Observable<MouseEvent> }> {
   private static _instance: Pointer;
 
   /**
@@ -21,7 +21,32 @@ export class Pointer {
    *    })
    * })
    */
-  private constructor() {}
+  private constructor() {
+    super(
+      (motion) => {
+        motion.meta.observable = fromEvent<MouseEvent>(window, "mousemove");
+
+        motion.subscriptions.push(
+          motion.meta.observable.subscribe((event) => {
+            this.clientX = event.clientX;
+            this.clientY = event.clientY;
+            this.normalX = gsap.utils.mapRange(0, this.viewWidth, 0, 1, this.clientX);
+            this.normalY = gsap.utils.mapRange(0, this.viewHeight, 0, 1, this.clientY);
+          })
+        );
+
+        motion.subscriptions.push(
+          fromEvent(window, "resize").subscribe(() => {
+            this.viewWidth = window.innerWidth;
+            this.viewHeight = window.innerHeight;
+          })
+        );
+
+        motion.meta.label = "Pointer";
+      },
+      { watchMedia: "(pointer: fine)" }
+    );
+  }
 
   /**
    * Get the current singleton Pointer instance.
@@ -45,39 +70,7 @@ export class Pointer {
   /** Pointer normalized y position (0 to 1)*/
   normalY = 0.5;
 
-  readonly observable = fromEvent<MouseEvent>(window, "mousemove");
-
-  /**
-   * Internal motion instance
-   */
-  readonly motion = new Motion<{ label: string }>(
-    (self) => {
-      self.subscriptions.push(
-        this.observable.subscribe((event) => {
-          this.clientX = event.clientX;
-          this.clientY = event.clientY;
-          this.normalX = gsap.utils.mapRange(0, this.viewWidth, 0, 1, this.clientX);
-          this.normalY = gsap.utils.mapRange(0, this.viewHeight, 0, 1, this.clientY);
-        })
-      );
-
-      self.subscriptions.push(
-        fromEvent(window, "resize").subscribe(() => {
-          this.viewWidth = window.innerWidth;
-          this.viewHeight = window.innerHeight;
-        })
-      );
-
-      self.meta.label = "Pointer";
-    },
-    { watchMedia: "(pointer: fine)" }
-  );
-
-  /**
-   * Destroys this instance, clearing any subscriptions and making it eligible for garbage collection.
-   * Note that referencing `Pointer.instance` will create a new instance.
-   */
-  destroy = () => {
-    this.motion.destroy();
-  };
+  get observable() {
+    return this.meta.observable;
+  }
 }
