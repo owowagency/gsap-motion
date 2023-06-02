@@ -4,17 +4,18 @@ import debounce from "lodash.debounce";
 import gsap from "gsap";
 
 export type MotionParams = {
-  watchMedia?: string;
-  shouldResetOnResize?: MotionWatchResizeTarget;
-  enable?: () => boolean;
+  watchMedia?: string | (() => string);
+  shouldResetOnResize?: MotionWatchResizeTarget | (() => MotionWatchResizeTarget);
+  enable?: boolean | (() => boolean);
 };
 
 export type MotionWatchResizeAxis = "vertical" | "horizontal";
 export type MotionWatchResizeTargetWithAxis = [HTMLElement | string, MotionWatchResizeAxis];
 export type MotionWatchResizeTarget = HTMLElement | string | MotionWatchResizeTargetWithAxis;
-export type MotionCleanup = () => void;
+export type MotionCleanup = (context: gsap.Context) => void;
 export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (
-  self: Motion<T>
+  self: Motion<T>,
+  context: gsap.Context
 ) => MotionCleanup | void | undefined;
 
 export class Motion<Meta extends Record<string, unknown> = Record<string, unknown>> {
@@ -45,6 +46,7 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
     return value * gsap.ticker.deltaRatio(this.referenceFramerate);
   }
 
+  private context!: gsap.Context;
   private mediaQueryList?: MediaQueryList;
   motionResizeObserver?: MotionResizeObserver;
   meta = {} as Meta & Record<string, unknown>;
@@ -73,18 +75,23 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
    * )
    */
   constructor(create: MotionImplementation<Meta>, params: MotionParams = {}) {
-    this.observeMedia(params.watchMedia);
-    this.observeResize(params.shouldResetOnResize);
+    this.observeMedia(getValue(params.watchMedia));
+    this.observeResize(getValue(params.shouldResetOnResize));
 
     this.create = () => {
-      const shouldCreate = [params.enable?.() ?? true, this.mediaQueryList?.matches ?? true].every(
-        Boolean
-      );
-      const cleanup = shouldCreate ? create(this) : undefined;
+      this.context = gsap.context();
+
+      const shouldCreate = [
+        getValue(params.enable) ?? true,
+        this.mediaQueryList?.matches ?? true,
+      ].every(Boolean);
+
+      const cleanup = shouldCreate ? create(this, this.context) : undefined;
+
       return cleanup;
     };
 
-    this.cleanup = this.create(this) ?? undefined;
+    this.cleanup = this.create(this, this.context) ?? undefined;
   }
 
   private observeMedia(queryString?: string) {
@@ -110,9 +117,9 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
    */
   reset = debounce(
     () => {
-      this.cleanup?.();
+      this.cleanup?.(this.context);
       requestAnimationFrame(() => {
-        this.cleanup = this.create?.(this) ?? undefined;
+        this.cleanup = this.create?.(this, this.context) ?? undefined;
       });
     },
     Motion.resetDebounceTime,
@@ -123,7 +130,7 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
    * Runs the cleanup function and makes this instance elegible for garbage collection.
    */
   destroy = () => {
-    this.cleanup?.();
+    this.cleanup?.(this.context);
     this.cleanup = undefined;
     this.create = undefined;
     this.mediaQueryList = undefined;
@@ -188,4 +195,8 @@ class MotionResizeObserver {
       subscriber.next();
     }
   }
+}
+
+function getValue<T>(of: T): T extends () => infer R ? R : T {
+  return of instanceof Function ? of() : of;
 }
