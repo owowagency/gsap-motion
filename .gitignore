@@ -29,3 +29,6 @@ wiki
 
 # Storybook
 storybook-static
+
+# gsap premium
+.npmrc
