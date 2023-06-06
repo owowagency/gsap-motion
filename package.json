@@ -1,6 +1,6 @@
 {
   "name": "@owowagency/gsap-motion",
-  "version": "1.13.1",
+  "version": "1.13.2",
   "type": "module",
   "files": [
     "dist"
