@@ -17,7 +17,7 @@ export type MotionCleanup = (context: gsap.Context) => void;
 export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (
   self: Motion<T>,
   context: gsap.Context
-) => MotionCleanup | void | undefined;
+) => (MotionCleanup | void | undefined) | Promise<MotionCleanup | void | undefined>;
 
 export class Motion<Meta extends Record<string, unknown> = Record<string, unknown>> {
   static readonly resetDebounceTime = 100;
@@ -92,7 +92,17 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
       return cleanup;
     };
 
-    this.cleanup = this.create(this, this.context) ?? undefined;
+    this.createAndSetCleanup();
+  }
+
+  private createAndSetCleanup() {
+    const creationResult = this.create?.(this, this.context);
+
+    if (creationResult instanceof Promise) {
+      creationResult.then((result) => (this.cleanup = result ?? undefined));
+    } else {
+      this.cleanup = creationResult ?? undefined;
+    }
   }
 
   private observeMedia(queryString?: string) {
@@ -119,9 +129,7 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
   reset = debounce(
     () => {
       this.cleanup?.(this.context);
-      requestAnimationFrame(() => {
-        this.cleanup = this.create?.(this, this.context) ?? undefined;
-      });
+      requestAnimationFrame(() => this.createAndSetCleanup());
     },
     Motion.resetDebounceTime,
     { leading: true }
