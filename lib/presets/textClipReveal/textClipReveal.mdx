@@ -1,0 +1,8 @@
+import { Canvas, Meta, Title, Primary, Description, Controls, Stories } from "@storybook/blocks";
+import * as TextClipRevealStories from "./textClipReveal.stories";
+
+<Meta of={TextClipRevealStories} />
+<Title />
+<Description of={TextClipRevealStories.Primary} />
+<Canvas of={TextClipRevealStories.Primary} />
+<Controls story={TextClipRevealStories.Primary} />
