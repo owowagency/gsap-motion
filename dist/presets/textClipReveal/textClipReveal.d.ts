@@ -12,5 +12,6 @@ export declare class TextClipReveal extends Motion<{
     setup?: gsap.core.Tween;
     tween?: gsap.core.Tween;
 }> {
+    static SplitText?: typeof SplitText;
     constructor(target: gsap.DOMTarget, settings?: TextClipRevealSettings, motionParams?: MotionParams);
 }
