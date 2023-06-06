@@ -1,7 +1,8 @@
-import { debounceTime, fromEvent, Observable } from "rxjs";
+import { debounceTime, fromEvent, noop, Observable } from "rxjs";
 import type { Subscriber, Subscription } from "rxjs";
 import debounce from "lodash.debounce";
 import gsap from "gsap";
+import { getValue } from "../../utils";
 
 export type MotionParams = {
   watchMedia?: string | (() => string);
@@ -79,7 +80,7 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
     this.observeResize(getValue(params.shouldResetOnResize));
 
     this.create = () => {
-      this.context = gsap.context();
+      this.context = gsap.context(noop);
 
       const shouldCreate = [
         getValue(params.enable) ?? true,
@@ -195,8 +196,4 @@ class MotionResizeObserver {
       subscriber.next();
     }
   }
-}
-
-function getValue<T>(of: T): T extends () => infer R ? R : T {
-  return of instanceof Function ? of() : of;
 }
