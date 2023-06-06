@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<any>;
 
 export const Primary: Story = {
-  render(args) {
+  render() {
     return html`<text-clip-reveal-example />`;
   },
 };
