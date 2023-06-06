@@ -55,7 +55,7 @@ export class TextClipReveal extends Motion<{
       const fromVars: gsap.TweenVars = {
         y: (_, target) => {
           const num = parseFloat(getComputedStyle(target).lineHeight);
-          return isNaN(num) ? gsap.getProperty(target, "height") : num;
+          return (isNaN(num) ? gsap.getProperty(target, "height") : num) as number;
         },
         ...getValue(settings.fromVars),
       };
