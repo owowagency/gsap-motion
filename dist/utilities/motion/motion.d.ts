@@ -9,7 +9,7 @@ export type MotionWatchResizeAxis = "vertical" | "horizontal";
 export type MotionWatchResizeTargetWithAxis = [HTMLElement | string, MotionWatchResizeAxis];
 export type MotionWatchResizeTarget = HTMLElement | string | MotionWatchResizeTargetWithAxis;
 export type MotionCleanup = (context: gsap.Context) => void;
-export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (self: Motion<T>, context: gsap.Context) => MotionCleanup | void | undefined;
+export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (self: Motion<T>, context: gsap.Context) => (MotionCleanup | void | undefined) | Promise<MotionCleanup | void | undefined>;
 export declare class Motion<Meta extends Record<string, unknown> = Record<string, unknown>> {
     static readonly resetDebounceTime = 100;
     /** Target framerate */
@@ -57,6 +57,7 @@ export declare class Motion<Meta extends Record<string, unknown> = Record<string
      * )
      */
     constructor(create: MotionImplementation<Meta>, params?: MotionParams);
+    private createAndSetCleanup;
     private observeMedia;
     private observeResize;
     /**
