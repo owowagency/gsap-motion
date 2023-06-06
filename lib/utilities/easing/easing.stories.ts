@@ -3,7 +3,7 @@ import { html } from "lit";
 
 // More on how to set up stories at: https://storybook.js.org/docs/web-components/writing-stories/introduction
 const meta = {
-  title: "core/Easing",
+  title: "utilities/Easing",
   parameters: {
     docs: {
       source: { code: null },
