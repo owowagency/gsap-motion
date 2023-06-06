@@ -1,4 +1,4 @@
-import { Motion } from "../../utilities/motion/motion";
+import { Motion, MotionParams } from "../../utilities/motion/motion";
 import { gsap } from "gsap";
 import { getValue } from "../../utils";
 import type { SplitText } from "gsap/all";
@@ -16,7 +16,11 @@ export class TextClipReveal extends Motion<{
   setup?: gsap.core.Tween;
   tween?: gsap.core.Tween;
 }> {
-  constructor(target: gsap.DOMTarget, settings: TextClipRevealSettings = {}) {
+  constructor(
+    target: gsap.DOMTarget,
+    settings: TextClipRevealSettings = {},
+    motionParams: MotionParams = {}
+  ) {
     super(async (motion, context) => {
       const SplitText = await importSplitTextPlugin();
 
@@ -68,7 +72,7 @@ export class TextClipReveal extends Motion<{
         childSplit.revert();
         context.kill(true);
       };
-    });
+    }, motionParams);
   }
 }
 
