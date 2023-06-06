@@ -16,12 +16,9 @@ export class TextClipRevealExample extends LitElement {
   }
 
   private createTextClipReveal() {
-    try {
-      this.titleReveal = new TextClipReveal(this.shadowRoot!.querySelector("h1"));
-      this.textReveal = new TextClipReveal(this.shadowRoot!.querySelector("p"));
-    } catch {
-      this.isSupported = false;
-    }
+    this.titleReveal = new TextClipReveal(this.shadowRoot!.querySelector("h1"));
+    this.textReveal = new TextClipReveal(this.shadowRoot!.querySelector("p"));
+    this.isSupported = !!this.titleReveal.meta.childSplit;
 
     this.shadowRoot!.querySelector("button")?.addEventListener("click", () => {
       this.titleReveal?.meta.tween?.play(0);
@@ -53,7 +50,7 @@ export class TextClipRevealExample extends LitElement {
           </div>
         </div>`
       : html`<iframe
-          src="https://codesandbox.io/embed/owowagency-gsap-motion-textclipreveal-5jqjzc?fontsize=14&hidenavigation=1&theme=dark"
+          src="https://codesandbox.io/embed/owowagency-gsap-motion-textclipreveal-5jqjzc?fontsize=14&hidenavigation=1&theme=dark&view=preview"
           style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
           title="@owowagency/gsap-motion/TextClipReveal"
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
