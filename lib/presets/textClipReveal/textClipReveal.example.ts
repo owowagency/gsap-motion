@@ -8,9 +8,9 @@ export class TextClipRevealExample extends LitElement {
 
   render() {
     return html`<iframe
-      src="https://codesandbox.io/embed/owowagency-gsap-motion-textclipreveal-5jqjzc?fontsize=14&hidenavigation=1&theme=dark&view=preview"
+      src="https://codesandbox.io/embed/owowagency-gsap-motion-textclipreveal-xuixh3?fontsize=14&hidenavigation=1&theme=dark"
       style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-      title="@owowagency/gsap-motion/TextClipReveal"
+      title="@owowagency/gsap-motion/textClipReveal"
       allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
       sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
     ></iframe>`;
