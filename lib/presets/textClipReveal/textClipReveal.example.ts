@@ -2,6 +2,7 @@ import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import style from "../../../tailwind.css?inline";
 import { TextClipReveal } from "./textClipReveal";
+import { SplitText } from "gsap/dist/SplitText";
 
 @customElement("text-clip-reveal-example")
 export class TextClipRevealExample extends LitElement {
@@ -16,6 +17,7 @@ export class TextClipRevealExample extends LitElement {
   }
 
   private createTextClipReveal() {
+    TextClipReveal.SplitText = SplitText;
     this.titleReveal = new TextClipReveal(this.shadowRoot!.querySelector("h1"));
     this.textReveal = new TextClipReveal(this.shadowRoot!.querySelector("p"));
     this.isSupported = !!this.titleReveal.meta.childSplit;

@@ -16,13 +16,15 @@ export class TextClipReveal extends Motion<{
   setup?: gsap.core.Tween;
   tween?: gsap.core.Tween;
 }> {
+  static SplitText?: typeof SplitText;
+
   constructor(
     target: gsap.DOMTarget,
     settings: TextClipRevealSettings = {},
     motionParams: MotionParams = {}
   ) {
     super(async (motion, context) => {
-      const SplitText = await importSplitTextPlugin();
+      const SplitText = TextClipReveal.SplitText;
 
       if (!SplitText) {
         console.error("SplitText is a GSAP member plugin. Did you forget to include it?");
@@ -73,16 +75,5 @@ export class TextClipReveal extends Motion<{
         context.kill(true);
       };
     }, motionParams);
-  }
-}
-
-async function importSplitTextPlugin() {
-  const path = "/node_modules/gsap/SplitText.js";
-  const modules = import.meta.glob("/node_modules/gsap/SplitText.js");
-  try {
-    const _module = ((await modules[path]?.()) ?? null) as typeof import("gsap/SplitText");
-    return _module?.default ?? null;
-  } catch (error) {
-    return null;
   }
 }
