@@ -8,16 +8,16 @@ export class SecondOrderDynamics {
 
   /**
    * Second Order Dynamics is a mathematical model that simulates object behavior by considering forces, acceleration, velocity, and position. It enables realistic animations by accurately representing movement and forces acting on objects.
-   * @param frequency Shape of the resulting motion
+   * @param speed Shape of the motion
    * @param damping Shape of settling of motion
    * @param response Acceleration of the motion
    * @param x0 Initial value
    */
-  constructor(frequency = 1, damping = 1, response = 0, x0: number) {
+  constructor(speed = 1, damping = 1, response = 0, x0: number) {
     // compute constants
-    this.k1 = damping / (Math.PI * frequency);
-    this.k2 = 1 / (2 * Math.PI * frequency * (2 * Math.PI * frequency));
-    this.k3 = (response * damping) / (2 * Math.PI * frequency);
+    this.k1 = damping / (Math.PI * speed);
+    this.k2 = 1 / (2 * Math.PI * speed * (2 * Math.PI * speed));
+    this.k3 = (response * damping) / (2 * Math.PI * speed);
 
     // initialize variables
     this.xp = x0;
