@@ -145,18 +145,24 @@ export class Marquee extends Motion<MarqueeMeta & Record<string, unknown>> {
         const wrap = gsap.utils.wrap(0, -innerRect.width);
         const normalize = gsap.utils.normalize(0, -innerRect.width);
         let direction: number,
-          velocity: number,
+          scrollVelocity: number,
           velocityDelta: number,
           xCurrent: number,
           xDelta: number,
           xIncrement: number,
-          xNext: number;
+          xNext: number,
+          deltaRatio: number;
 
         const update = gsap.ticker.add(() => {
-          velocity =
-            motion.meta.velocity != undefined ? motion.meta.scrollTrigger.getVelocity() ?? 0 : 0;
+          deltaRatio = gsap.ticker.deltaRatio();
 
-          velocityDelta = velocity * motion.meta.velocity;
+          scrollVelocity = gsap.utils.interpolate(
+            scrollVelocity ?? 0,
+            motion.meta.scrollTrigger.getVelocity(),
+            0.5 * deltaRatio
+          );
+
+          velocityDelta = scrollVelocity * motion.meta.velocity;
 
           switch (motion.meta.direction) {
             case "ltr":
@@ -177,7 +183,7 @@ export class Marquee extends Motion<MarqueeMeta & Record<string, unknown>> {
 
           xCurrent = gsap.getProperty(outerContainer, "x") as number;
           xDelta = motion.meta.speed * -direction;
-          xIncrement = (xDelta - velocityDelta) * gsap.ticker.deltaRatio();
+          xIncrement = (xDelta - velocityDelta) * deltaRatio;
           xNext = wrap(xCurrent + xIncrement);
           setX(xNext);
           motion.meta.onUpdate?.(normalize(xNext));
