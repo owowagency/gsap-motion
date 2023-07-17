@@ -1,4 +1,4 @@
-import { debounceTime, fromEvent, fromEventPattern, noop, Observable } from "rxjs";
+import { debounceTime, fromEvent, noop, Observable } from "rxjs";
 import type { Subscriber, Subscription } from "rxjs";
 import debounce from "lodash.debounce";
 import gsap from "gsap";
@@ -171,10 +171,7 @@ class MotionResizeObserver {
 
     if (this.target === window) {
       this.observable = new Observable<UIEvent>((subscriber) => {
-        const handleResize = (event: UIEvent) => {
-          this.handleWindowResize(event, subscriber);
-        };
-
+        const handleResize = () => this.handleWindowResize(subscriber);
         window.addEventListener("resize", handleResize, { passive: true });
         return () => window.removeEventListener("resize", handleResize);
       });
@@ -189,7 +186,7 @@ class MotionResizeObserver {
     }
   }
 
-  private handleWindowResize(event: UIEvent, subscriber: Subscriber<UIEvent>) {
+  private handleWindowResize(subscriber: Subscriber<UIEvent>) {
     this.emit(subscriber, window.innerWidth, window.innerHeight);
   }
 
