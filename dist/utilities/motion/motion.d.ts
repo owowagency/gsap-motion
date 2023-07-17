@@ -6,8 +6,11 @@ export type MotionParams = {
     enable?: boolean | (() => boolean);
 };
 export type MotionWatchResizeAxis = "vertical" | "horizontal";
-export type MotionWatchResizeTargetWithAxis = [HTMLElement | string, MotionWatchResizeAxis];
-export type MotionWatchResizeTarget = HTMLElement | string | MotionWatchResizeTargetWithAxis;
+export type MotionWatchResizeTargetWithAxis = [
+    Window | HTMLElement | string,
+    MotionWatchResizeAxis
+];
+export type MotionWatchResizeTarget = Window | HTMLElement | string | MotionWatchResizeTargetWithAxis;
 export type MotionCleanup = (context: gsap.Context) => void;
 export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (self: Motion<T>, context: gsap.Context) => (MotionCleanup | void | undefined) | Promise<MotionCleanup | void | undefined>;
 export declare class Motion<Meta extends Record<string, unknown> = Record<string, unknown>> {
@@ -71,11 +74,13 @@ export declare class Motion<Meta extends Record<string, unknown> = Record<string
 }
 declare class MotionResizeObserver {
     private axis?;
-    private element;
+    private target;
     private inlineSize?;
     private blockSize?;
-    observable: Observable<ResizeObserverEntry[]>;
+    observable: Observable<ResizeObserverEntry[] | UIEvent>;
     constructor(target: MotionWatchResizeTarget);
-    private handleResize;
+    private handleWindowResize;
+    private handleElementResize;
+    private emit;
 }
 export {};
