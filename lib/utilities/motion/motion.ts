@@ -1,4 +1,4 @@
-import { debounceTime, fromEvent, noop, Observable } from "rxjs";
+import { debounceTime, fromEvent, fromEventPattern, noop, Observable } from "rxjs";
 import type { Subscriber, Subscription } from "rxjs";
 import debounce from "lodash.debounce";
 import gsap from "gsap";
@@ -11,8 +11,15 @@ export type MotionParams = {
 };
 
 export type MotionWatchResizeAxis = "vertical" | "horizontal";
-export type MotionWatchResizeTargetWithAxis = [HTMLElement | string, MotionWatchResizeAxis];
-export type MotionWatchResizeTarget = HTMLElement | string | MotionWatchResizeTargetWithAxis;
+export type MotionWatchResizeTargetWithAxis = [
+  Window | HTMLElement | string,
+  MotionWatchResizeAxis
+];
+export type MotionWatchResizeTarget =
+  | Window
+  | HTMLElement
+  | string
+  | MotionWatchResizeTargetWithAxis;
 export type MotionCleanup = (context: gsap.Context) => void;
 export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (
   self: Motion<T>,
@@ -151,33 +158,52 @@ export class Motion<Meta extends Record<string, unknown> = Record<string, unknow
 
 class MotionResizeObserver {
   private axis?: MotionWatchResizeAxis;
-  private element: Element | null;
+  private target: Window | Element | null;
   private inlineSize?: number;
   private blockSize?: number;
 
-  observable: Observable<ResizeObserverEntry[]>;
+  observable: Observable<ResizeObserverEntry[] | UIEvent>;
 
   constructor(target: MotionWatchResizeTarget) {
     const [element, axis] = [target].flat() as MotionWatchResizeTargetWithAxis;
-    this.element = typeof element === "string" ? document.querySelector(element) : element;
+    this.target = typeof element === "string" ? document.querySelector(element) : element;
     this.axis = axis;
 
-    this.observable = new Observable<ResizeObserverEntry[]>((subscriber) => {
-      const resizeObserver = new ResizeObserver((entries) =>
-        this.handleResize(entries, subscriber)
-      );
-      if (this.element) resizeObserver.observe(this.element);
-      return () => resizeObserver.disconnect();
-    });
+    if (this.target === window) {
+      this.observable = new Observable<UIEvent>((subscriber) => {
+        const handleResize = (event: UIEvent) => {
+          this.handleWindowResize(event, subscriber);
+        };
+
+        window.addEventListener("resize", handleResize, { passive: true });
+        return () => window.removeEventListener("resize", handleResize);
+      });
+    } else {
+      this.observable = new Observable<ResizeObserverEntry[]>((subscriber) => {
+        const resizeObserver = new ResizeObserver((entries) =>
+          this.handleElementResize(entries, subscriber)
+        );
+        if (this.target) resizeObserver.observe(this.target as Element);
+        return () => resizeObserver.disconnect();
+      });
+    }
   }
 
-  private handleResize(
+  private handleWindowResize(event: UIEvent, subscriber: Subscriber<UIEvent>) {
+    this.emit(subscriber, window.innerWidth, window.innerHeight);
+  }
+
+  private handleElementResize(
     entries: ResizeObserverEntry[],
     subscriber: Subscriber<ResizeObserverEntry[]>
   ) {
-    const entry = entries.find((e) => e.target === this.element);
+    const entry = entries.find((e) => e.target === this.target);
     if (!entry) return;
     const { inlineSize, blockSize } = entry.borderBoxSize[0];
+    this.emit(subscriber, inlineSize, blockSize);
+  }
+
+  private emit<T>(subscriber: Subscriber<T>, inlineSize: number, blockSize: number) {
     const isInlineChanged = inlineSize !== this.inlineSize;
     const isBlockChanged = blockSize !== this.blockSize;
     const shouldInitialize = this.inlineSize == null || this.blockSize == null;
