@@ -7,13 +7,14 @@ export class Pointer extends Motion<{ observable?: Observable<MouseEvent> }> {
   private static _instance: Pointer;
 
   /**
-   * Utility for doing stuff with the mouse/pointer.
+   * The Pointer class is a utility for interacting with the mouse/pointer.
+   * It extends the Motion class and provides an observable for mouse events.
    *
-   * _This class exposes a static singleton `instance`,
-   * and does **not** have to be created using `new Pointer();`_
+   * This class is implemented as a singleton, meaning only one instance of it exists.
+   * Therefore, it does not need to be instantiated using `new Pointer();`. Instead, use `Pointer.instance`.
    *
    * @example
-   * // Make a custom cursor that copies the current pointer position.
+   * // Create a custom cursor that mirrors the current pointer position.
    * gsap.ticker.add(() => {
    *    gsap.set("#custom-cursor", {
    *      x: Pointer.instance.clientX,
@@ -24,8 +25,10 @@ export class Pointer extends Motion<{ observable?: Observable<MouseEvent> }> {
   private constructor() {
     super(
       (motion) => {
+        // Create an observable for mousemove events
         motion.meta.observable = fromEvent<MouseEvent>(window, "mousemove");
 
+        // Subscribe to the observable and update the pointer's position and normalized position on each event
         motion.subscriptions.push(
           motion.meta.observable.subscribe((event) => {
             this.clientX = event.clientX;
@@ -35,6 +38,7 @@ export class Pointer extends Motion<{ observable?: Observable<MouseEvent> }> {
           })
         );
 
+        // Subscribe to window resize events and update the view dimensions
         motion.subscriptions.push(
           fromEvent(window, "resize").subscribe(() => {
             this.viewWidth = window.innerWidth;
@@ -49,27 +53,31 @@ export class Pointer extends Motion<{ observable?: Observable<MouseEvent> }> {
   }
 
   /**
-   * Get the current singleton Pointer instance.
+   * Returns the singleton instance of the Pointer class.
+   * If the instance does not exist, it is created.
    */
   static get instance() {
     return (this._instance ??= new Pointer());
   }
 
-  /** Window inner width */
+  /** The width of the window's inner viewport */
   viewWidth = window.innerWidth;
-  /** Window inner height */
+  /** The height of the window's inner viewport */
   viewHeight = window.innerHeight;
 
-  /** Pointer absolute x position */
+  /** The pointer's absolute x-coordinate within the viewport */
   clientX = this.viewWidth / 2;
-  /** Pointer absolute y position */
+  /** The pointer's absolute y-coordinate within the viewport */
   clientY = this.viewHeight / 2;
 
-  /** Pointer normalized x position (0 to 1) */
+  /** The pointer's x-coordinate normalized to a range of 0 to 1 */
   normalX = 0.5;
-  /** Pointer normalized y position (0 to 1)*/
+  /** The pointer's y-coordinate normalized to a range of 0 to 1 */
   normalY = 0.5;
 
+  /**
+   * Returns the observable for mouse events.
+   */
   get observable() {
     return this.meta.observable;
   }
