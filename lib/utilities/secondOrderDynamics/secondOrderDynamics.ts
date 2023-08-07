@@ -14,7 +14,7 @@ export class SecondOrderDynamics {
    * @param response Defines the acceleration of the motion
    * @param x0 The initial value or starting point of the motion
    */
-  constructor(speed = 1, damping = 1, response = 0, x0: number) {
+  constructor(speed = 1, damping = 1, response = 0, x0 = 0) {
     // Compute constants based on the provided parameters
     this.k1 = damping / (Math.PI * speed);
     this.k2 = 1 / (2 * Math.PI * speed * (2 * Math.PI * speed));
