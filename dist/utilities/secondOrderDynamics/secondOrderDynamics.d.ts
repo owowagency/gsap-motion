@@ -6,19 +6,20 @@ export declare class SecondOrderDynamics {
     private readonly k2;
     private readonly k3;
     /**
-     * Second Order Dynamics is a mathematical model that simulates object behavior by considering forces, acceleration, velocity, and position. It enables realistic animations by accurately representing movement and forces acting on objects.
-     * @param speed Shape of the motion
-     * @param damping Shape of settling of motion
-     * @param response Acceleration of the motion
-     * @param x0 Initial value
+     * Second Order Dynamics are a mathematical model that simulates the behavior of an object by considering forces, acceleration, velocity, and position.
+     * It is used to create realistic animations by accurately representing the movement and forces acting on objects.
+     * @param speed Defines the shape of the motion
+     * @param damping Defines how the motion settles over time
+     * @param response Defines the acceleration of the motion
+     * @param x0 The initial value or starting point of the motion
      */
-    constructor(speed: number | undefined, damping: number | undefined, response: number | undefined, x0: number);
+    constructor(speed?: number, damping?: number, response?: number, x0?: number);
     /**
-     * Calculate and apply next position
-     * @param step Step to calculate next position. For example; delta time.
-     * @param x Next value
-     * @param xd Optional velocity
-     * @returns
+     * Calculates and applies the next position of the object based on the provided step and value.
+     * @param step The step size used to calculate the next position. Typically, this is the delta time.
+     * @param x The next value or target of the motion
+     * @param xd Optional parameter to provide the velocity
+     * @returns The updated position of the object
      */
     update(step: number, x: number, xd?: number): number;
 }

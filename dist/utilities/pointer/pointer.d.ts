@@ -5,13 +5,14 @@ export declare class Pointer extends Motion<{
 }> {
     private static _instance;
     /**
-     * Utility for doing stuff with the mouse/pointer.
+     * The Pointer class is a utility for interacting with the mouse/pointer.
+     * It extends the Motion class and provides an observable for mouse events.
      *
-     * _This class exposes a static singleton `instance`,
-     * and does **not** have to be created using `new Pointer();`_
+     * This class is implemented as a singleton, meaning only one instance of it exists.
+     * Therefore, it does not need to be instantiated using `new Pointer();`. Instead, use `Pointer.instance`.
      *
      * @example
-     * // Make a custom cursor that copies the current pointer position.
+     * // Create a custom cursor that mirrors the current pointer position.
      * gsap.ticker.add(() => {
      *    gsap.set("#custom-cursor", {
      *      x: Pointer.instance.clientX,
@@ -21,20 +22,24 @@ export declare class Pointer extends Motion<{
      */
     private constructor();
     /**
-     * Get the current singleton Pointer instance.
+     * Returns the singleton instance of the Pointer class.
+     * If the instance does not exist, it is created.
      */
     static get instance(): Pointer;
-    /** Window inner width */
+    /** The width of the window's inner viewport */
     viewWidth: number;
-    /** Window inner height */
+    /** The height of the window's inner viewport */
     viewHeight: number;
-    /** Pointer absolute x position */
+    /** The pointer's absolute x-coordinate within the viewport */
     clientX: number;
-    /** Pointer absolute y position */
+    /** The pointer's absolute y-coordinate within the viewport */
     clientY: number;
-    /** Pointer normalized x position (0 to 1) */
+    /** The pointer's x-coordinate normalized to a range of 0 to 1 */
     normalX: number;
-    /** Pointer normalized y position (0 to 1)*/
+    /** The pointer's y-coordinate normalized to a range of 0 to 1 */
     normalY: number;
+    /**
+     * Returns the observable for mouse events.
+     */
     get observable(): Observable<MouseEvent> | undefined;
 }
