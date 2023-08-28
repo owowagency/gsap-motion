@@ -6,10 +6,11 @@
     "dist"
   ],
   "main": "./dist/gsap-motion.umd.cjs",
-  "types": "./dist/main.d.ts",
+  "types": "./dist/index.d.ts",
   "module": "./dist/gsap-motion.js",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/gsap-motion.umd.cjs",
       "import": "./dist/gsap-motion.js"
     }
