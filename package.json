@@ -5,7 +5,7 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/gsap-motion.umd.cjs",
+  "main": "./dist/gsap-motion.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/gsap-motion.js",
   "exports": {
