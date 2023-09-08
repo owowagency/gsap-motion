@@ -6,7 +6,7 @@ type Value<T> = T | (() => T);
 
 type MotionObservableElement = string | Element | null;
 
-type MotionParams = {
+export type MotionParams = {
   observeElementResize?: Value<MotionObservableElement | ReadonlyArray<MotionObservableElement>>;
   observeWindowResize?: Value<boolean>;
   matchMedia?: Value<string>;
@@ -14,7 +14,7 @@ type MotionParams = {
   revertOnDestroy?: Value<boolean>;
 };
 
-type MotionConfig = {
+export type MotionConfig = {
   observeElementResize?: MotionObservableElement | ReadonlyArray<MotionObservableElement>;
   observeWindowResize?: boolean;
   matchMedia?: string;
@@ -22,11 +22,11 @@ type MotionConfig = {
   revertOnDestroy?: boolean;
 };
 
-interface MotionCleanup {
+export interface MotionCleanup {
   (destroyed: boolean): void;
 }
 
-interface MotionEffect {
+export interface MotionEffect {
   (): Optional<MotionCleanup>;
 }
 
@@ -142,3 +142,5 @@ function observeBodyResizeWarning(message: string) {
   return (element: Element) =>
     B.ifElse(element.tagName === "BODY", printError(`Warning: ${message}`), F.ignore);
 }
+
+export { Motion } from "./motion.legacy";
