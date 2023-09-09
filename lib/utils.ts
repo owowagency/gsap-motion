@@ -15,7 +15,7 @@ export function getValue<T>(of: T, ...args: any[]): T extends (...args: any[]) =
 }
 
 export function printError(message: string) {
-  return () => console.error(message);
+  return import.meta.env.DEV ? () => console.error(message) : F.ignore;
 }
 
 export function iterableToArray<T>(iterable: Iterable<T>) {
