@@ -190,7 +190,7 @@ class MotionResizeObserver {
   ) {
     const entry = entries.find((e) => e.target === this.target);
     if (!entry) return;
-    const { inlineSize, blockSize } = entry.borderBoxSize[0];
+    const { inlineSize, blockSize } = entry.borderBoxSize[0]!;
     this.emit(subscriber, inlineSize, blockSize);
   }
 

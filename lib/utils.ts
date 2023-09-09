@@ -1,4 +1,5 @@
-import { B, F, G, O, flow, pipe } from "@mobily/ts-belt";
+import { A, B, F, G, O, flow, pipe } from "@mobily/ts-belt";
+import { fromEvent, fromEventPattern } from "rxjs";
 
 /**
  * This utility function is used to get the value of a given input.
@@ -83,3 +84,34 @@ export function createNormalizedVec2(vec2: Vec2, bbox: Vec2): NormalizedVec2 {
     ny: vec2.y / bbox.y,
   };
 }
+
+export function createMemoizedWindowResizeObservable() {
+  return F.once(() => fromEvent<UIEvent>(globalThis, "resize", { passive: true }));
+}
+
+export function createMemoizedMousemoveObservable() {
+  return F.once(() => fromEvent<MouseEvent>(globalThis, "mousemove", { passive: true }));
+}
+
+export function createMemoizedElementsResizeObservable() {
+  return F.once((targets: readonly Element[]) => {
+    const handlers = new Set<() => unknown>();
+    const observer = new ResizeObserver(() => handlers.forEach((handler) => handler()));
+
+    const observable$ = fromEventPattern(
+      (handler) => {
+        A.forEach(targets, observer.observe.bind(observer));
+        handlers.add(handler);
+        return observer;
+      },
+      (handler) => {
+        A.forEach(targets, observer.unobserve.bind(observer));
+        handlers.delete(handler);
+      }
+    );
+
+    return observable$;
+  });
+}
+
+export const getUndefined = () => undefined;

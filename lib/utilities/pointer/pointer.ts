@@ -1,14 +1,16 @@
 import { D, F, O, flow, pipe } from "@mobily/ts-belt";
-import { fromEvent, map } from "rxjs";
+import { map } from "rxjs";
 import {
   createCachedMap,
   createNormalizedVec2,
   createVec2,
+  createMemoizedWindowResizeObservable,
   getDocumentElement,
   getGlobalContext,
   getScreen,
   readFromMap,
   writeToMap,
+  createMemoizedMousemoveObservable,
 } from "../../utils";
 
 export { Pointer } from "./pointer.legacy";
@@ -22,14 +24,8 @@ export const mousePosition = F.once(() => {
   const writeToMouseCache = pipe(getMouseCache(), writeToMap);
   const readFromDimensionsCache = pipe(getDimensionsCache(), readFromMap);
   const writeToDimensionsCache = pipe(getDimensionsCache(), writeToMap);
-
-  const dimensions$ = fromEvent<UIEvent>(globalThis, "resize", { passive: true }).pipe(
-    map(createDimensions)
-  );
-
-  const mouse$ = fromEvent<MouseEvent>(globalThis, "mousemove", { passive: true }).pipe(
-    map(createMousePositionsFromEvent)
-  );
+  const dimensions$ = getWindowResizeObservable().pipe(map(createDimensions));
+  const mouse$ = getMousemoveObservable().pipe(map(createMousePositionsFromEvent));
 
   mouse$.subscribe(
     flow(
@@ -58,6 +54,9 @@ export const mousePosition = F.once(() => {
     },
   };
 });
+
+const getWindowResizeObservable = createMemoizedWindowResizeObservable();
+const getMousemoveObservable = createMemoizedMousemoveObservable();
 
 const getMouseCache = createCachedMap<string, NormalizedVec2>(
   flow(createDimensions, (dims) => [
