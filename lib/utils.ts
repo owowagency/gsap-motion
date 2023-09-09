@@ -41,3 +41,45 @@ export function getElement(queryOrElement?: string | Element | null): Element | 
 export function queryElement(query: string) {
   return () => document.querySelector(query);
 }
+
+export function getGlobalContext() {
+  return F.once(() => globalThis);
+}
+
+export function getDocumentElement() {
+  const globalContext = getGlobalContext();
+  return F.once(() => globalContext().document.documentElement);
+}
+
+export function getScreen() {
+  const globalContext = getGlobalContext();
+  return F.once(() => globalContext().screen);
+}
+
+export function createMap<K, V>(iterable?: Iterable<readonly [K, V]> | null) {
+  return new Map(iterable);
+}
+
+export function createCachedMap<K, V>(getIterable?: () => Iterable<readonly [K, V]> | null) {
+  return F.once(() => createMap<K, V>(getIterable?.()));
+}
+
+export function readFromMap<K, V>(map: Map<K, V>) {
+  return (key: K) => map.get(key);
+}
+
+export function writeToMap<K, V>(map: Map<K, V>) {
+  return (key: K, value: V) => map.set(key, value);
+}
+
+export function createVec2(x: number, y: number): Vec2 {
+  return { x, y };
+}
+
+export function createNormalizedVec2(vec2: Vec2, bbox: Vec2): NormalizedVec2 {
+  return {
+    ...vec2,
+    nx: vec2.x / bbox.x,
+    ny: vec2.y / bbox.y,
+  };
+}
