@@ -1,7 +1,5 @@
 import { gsap } from "gsap";
 import "./style.css";
-import { createMotion } from "../../dist/motion";
+import { createMotion } from "../..";
 
-createMotion(() => {
-  console.log("create motion!");
-});
+console.log(createMotion);

@@ -7,9 +7,7 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: {
-        utilities: resolve(__dirname, "lib/utilities"),
-      },
+      entry: resolve(__dirname, "lib/index"),
       name: "gsapMotion",
     },
     rollupOptions: {
@@ -21,6 +19,7 @@ export default defineConfig({
         // for externalized deps
         globals: {
           gsap: "gsap",
+          rxjs: "rxjs",
         },
       },
     },

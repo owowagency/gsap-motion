@@ -9,9 +9,9 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/gsap-motion.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/gsap-motion.umd.cjs",
   "module": "./dist/gsap-motion.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
