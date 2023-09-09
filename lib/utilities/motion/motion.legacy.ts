@@ -20,7 +20,7 @@ type MotionImplementation<T extends Record<string, unknown> = Record<string, unk
 ) => (MotionCleanup | void | undefined) | Promise<MotionCleanup | void | undefined>;
 
 /**
- * @deprecated This class is deprecated in favour of `createMotion`
+ * @deprecated This class is deprecated in favour of `createMotion`.
  * @example
  * // create a motion controller for a staggered text lines animation
  * const splitTextMotion = new Motion(

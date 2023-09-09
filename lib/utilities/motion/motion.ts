@@ -3,8 +3,7 @@ import { getElement, getValue, printError } from "../../utils";
 import { gsap } from "gsap";
 
 type Value<T> = T | (() => T);
-
-type MotionObservableElement = string | Element | null;
+export type MotionObservableElement = string | Element | null;
 
 export type MotionParams = {
   observeElementResize?: Value<MotionObservableElement | ReadonlyArray<MotionObservableElement>>;
@@ -30,6 +29,8 @@ export interface MotionEffect {
   (): Optional<MotionCleanup>;
 }
 
+const DEBOUNCE_MS = 100;
+
 export function createMotion(effect: MotionEffect, params: Value<MotionParams> = {}) {
   let isDestroyed = false;
   let effectCleanup: Optional<MotionCleanup>;
@@ -38,6 +39,20 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
   const getMatchMedia = F.once(() => gsap.matchMedia());
   const resizeObserver = getResizeObserver();
   const resizeObserverCache = getElementResizeCallbackCache();
+
+  const windowResizeHandler = pipe(
+    O.fromNullable(config.observeWindowResize),
+    O.map(
+      flow(
+        B.ifElse(
+          () => () => runEffect(),
+          () => F.ignore
+        )
+      )
+    ),
+    O.map(addWindowResizeHandler(getWindowResizeCallbackCache())),
+    O.toUndefined
+  );
 
   const resizeElements = pipe(
     A.make(1, config.observeElementResize),
@@ -60,7 +75,8 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
 
   const init = flow(
     () => observeResizeElements(resizeObserver, resizeObserverCache, resizeElements, runEffect),
-    F.ifElse(A.isEmpty, runEffect, F.ignore)
+    F.ifElse(A.isEmpty, runEffect, F.ignore),
+    observeWindowResize
   );
 
   init();
@@ -82,6 +98,7 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
   function destroy() {
     internalCleanup?.(true);
     unobserveResizeElements(resizeObserver, resizeObserverCache, resizeElements);
+    removeWindowResizeHandler(getWindowResizeCallbackCache())(windowResizeHandler);
   }
 
   return Object.freeze({ destroy });
@@ -133,7 +150,7 @@ const getResizeObserver = F.once(() => {
         (value) => F.coerce<ReadonlyArray<() => void>>([...value.values()]),
         A.tap((value) => value())
       ),
-      100
+      DEBOUNCE_MS
     )
   );
 });
@@ -142,5 +159,25 @@ function observeBodyResizeWarning(message: string) {
   return (element: Element) =>
     B.ifElse(element.tagName === "BODY", printError(`Warning: ${message}`), F.ignore);
 }
+
+function addWindowResizeHandler(cache: Set<(event: UIEvent) => unknown>) {
+  return (callback: (event: UIEvent) => unknown) =>
+    pipe(callback, F.debounce(DEBOUNCE_MS), F.tap(cache.add.bind(cache)));
+}
+
+function removeWindowResizeHandler(cache: Set<(event: UIEvent) => unknown>) {
+  return (callback?: (event: UIEvent) => unknown) =>
+    pipe(O.fromNullable(callback), O.tap(cache.delete.bind(cache)));
+}
+
+const getWindowResizeCallbackCache = F.once(() => new Set<(event: UIEvent) => unknown>());
+
+const observeWindowResize = F.once(() => {
+  globalThis.addEventListener(
+    "resize",
+    (event: UIEvent) => getWindowResizeCallbackCache().forEach((callback) => callback(event)),
+    { passive: true }
+  );
+});
 
 export { Motion } from "./motion.legacy";
