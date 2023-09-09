@@ -5,7 +5,8 @@
     "module": "ESNext",
     "experimentalDecorators": true,
     "types": [
-      "vite/client"
+      "vite/client",
+      "node"
     ],
     "lib": [
       "ES2020",
