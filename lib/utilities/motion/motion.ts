@@ -34,8 +34,10 @@ export interface MotionCleanup {
 }
 
 export interface MotionEffect {
-  (): Optional<MotionCleanup> | void;
+  (context: gsap.Context): Optional<MotionCleanup> | void;
 }
+
+const getWindowResizeObservable = createMemoizedWindowResizeObservable();
 
 /**
  * Creates a motion effect with a managed lifecycle. This function initializes, runs, and cleans up the motion effect based on the provided parameters.
@@ -50,15 +52,31 @@ export interface MotionEffect {
  */
 export function createMotion(effect: MotionEffect, params: Value<MotionParams> = {}): () => void {
   let isDestroyed = false;
-  let effectCleanup: Optional<MotionCleanup>;
-  console.log("create motion", params);
-  const runEffectCleanup = () => effectCleanup?.(false);
+  let effectCleanupFn: Optional<MotionCleanup>;
+
   const config = pipe(params, getValue, D.map(flow(O.fromNullable, getValue))) as MotionConfig;
   const getMatchMedia = F.once(() => gsap.matchMedia());
   const getElementResizeObservable = createMemoizedElementsResizeObservable();
+
   const subscribeWithEffect = <T>(observable: Observable<T>) => {
     return observable.pipe(debounceTime(100)).subscribe(runEffect);
   };
+
+  const runEffectCleanup = () => effectCleanupFn?.(false);
+
+  const runEffect = F.debounce(
+    flow(
+      runEffectCleanup,
+      getMatchMedia,
+      createGsapContext(config.matchMedia ?? "all", (context) => {
+        const cleanup = effect(context);
+        updateEffectCleanupFn(cleanup ?? F.ignore);
+        return () => void cleanup?.(isDestroyed);
+      }),
+      F.ignore
+    ),
+    0
+  );
 
   const resizeElements = pipe(
     A.make(1, config.observeElementResize),
@@ -66,16 +84,6 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
     A.map(getElement),
     A.filter(G.isNotNullable),
     A.tap(observeBodyResizeWarning("Observing the <body> for resizes may cause chain reactions."))
-  );
-
-  const runEffect = flow(
-    runEffectCleanup,
-    getMatchMedia,
-    createGsapContext(
-      config.matchMedia ?? "all",
-      createLifecycle(effect, setEffectCleanup, internalCleanup)
-    ),
-    F.ignore
   );
 
   const elementResizeSubscription = pipe(
@@ -90,16 +98,13 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
     O.toUndefined
   );
 
-  const init = () => F.ifElse(resizeElements, A.isEmpty, runEffect, F.ignore);
-
   init();
 
-  function setEffectCleanup(fn?: typeof effectCleanup) {
-    return (effectCleanup = fn);
+  function updateEffectCleanupFn(fn?: typeof effectCleanupFn) {
+    return (effectCleanupFn = fn);
   }
 
   function internalCleanup(destroy = false) {
-    console.log("internal cleanup");
     pipe(
       B.and(destroy, !isDestroyed),
       F.when(F.identity, () => {
@@ -115,73 +120,20 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
     windowResizeSubscription?.unsubscribe();
   }
 
+  function init() {
+    F.ifElse(resizeElements, A.isEmpty, runEffect, F.ignore);
+  }
+
   return destroy;
 }
 
-function createLifecycle(
-  effect: MotionEffect,
-  syncEffectCleanup: (fn?: Optional<MotionCleanup> | void) => Optional<MotionCleanup>,
-  cleanup: (destroyed?: boolean) => void
-) {
-  return () => {
-    syncEffectCleanup(effect());
-    return () => cleanup();
-  };
-}
-
 function createGsapContext(query: string, fn: gsap.ContextFunc) {
-  return (matchMedia: gsap.MatchMedia) => matchMedia.add(query, fn);
+  return F.once((matchMedia: gsap.MatchMedia) => matchMedia.add(query, fn));
 }
-
-// function unobserveResizeElements(
-//   observer: ResizeObserver,
-//   cache: Map<readonly Element[], () => unknown>,
-//   elements: readonly Element[]
-// ) {
-//   cache.delete(elements);
-//   A.forEach(elements, observer.unobserve.bind(observer));
-//   return elements;
-// }
-
-// function observeResizeElements(
-//   observer: ResizeObserver,
-//   cache: Map<readonly Element[], () => unknown>,
-//   elements: readonly Element[],
-//   callback: () => void
-// ) {
-//   cache.set(elements, callback);
-//   // A.forEach(elements, observer.observe.bind(observer));
-//   observer;
-//   return elements;
-// }
-
-// const getElementResizeCallbackCache = F.once(() => new Map<readonly Element[], () => unknown>());
-// const _getElementResizeObserver = createMemoizedElementResizeObservable(
-//   flow(
-//     getElementResizeCallbackCache,
-//     (value) => F.coerce<ReadonlyArray<() => void>>([...value.values()]),
-//     A.tap((value) => value())
-//   )
-// );
-
-// const getResizeObserver = F.once(() => {
-//   return new ResizeObserver(
-//     F.debounce(
-//       flow(
-//         getElementResizeCallbackCache,
-//         (value) => F.coerce<ReadonlyArray<() => void>>([...value.values()]),
-//         A.tap((value) => value())
-//       ),
-//       DEBOUNCE_MS
-//     )
-//   );
-// });
 
 function observeBodyResizeWarning(message: string) {
   return (element: Element) =>
     B.ifElse(element.tagName === "BODY", printError(`Warning: ${message}`), F.ignore);
 }
-
-const getWindowResizeObservable = createMemoizedWindowResizeObservable();
 
 export { Motion } from "./motion.legacy";
