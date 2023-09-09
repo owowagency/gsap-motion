@@ -30,4 +30,7 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
+  define: {
+    "process.env": process.env,
+  },
 });
