@@ -2,10 +2,10 @@
  * Function that implements physics based motion, using the Second Order Dynamics model.
  * Second Order Dynamics are a mathematical model that simulates the behavior of an object by considering forces, acceleration, velocity, and position.
  * It is used to create realistic animations by accurately representing the movement and forces acting on objects.
- * @param speed Defines the shape of the motion
- * @param damping Defines how the motion settles over time
- * @param response Defines the acceleration of the motion
- * @param x0 The initial value or starting point of the motion
+ * @param speed Defines the shape of the motion (default 1)
+ * @param damping Defines how the motion settles over time (default 1)
+ * @param response Defines the acceleration of the motion (default 0)
+ * @param x0 The initial value or starting point of the motion (default 0)
  */
 export function physicsBasedMotion(speed = 1, damping = 1, response = 0, x0 = 0) {
   // Compute constants based on the provided parameters
@@ -25,15 +25,14 @@ export function physicsBasedMotion(speed = 1, damping = 1, response = 0, x0 = 0)
    * @param xd Optional parameter to provide the velocity
    * @returns The updated position of the object
    */
-  function update(step: number, x: number, xd?: number): number {
-    if (xd === undefined) {
-      // Estimate the velocity if no value is provided
-      xd = (x - xp) / step;
-      xp = x;
-    }
+  function update(step: number, x: number): number {
+    // Estimate the velocity
+    const xd = (x - xp) / step;
 
     // Clamp k2 to ensure stability during framerate peaks, such as during lag spikes or at very high refresh rates
     const k2Stable = Math.max(k2, (step * step) / 2 + (step * k1) / 2, step * k1);
+
+    xp = x;
 
     // Update the position and velocity of the object
     y = y + step * yd;
@@ -45,4 +44,5 @@ export function physicsBasedMotion(speed = 1, damping = 1, response = 0, x0 = 0)
   return Object.freeze({ update });
 }
 
+// legacy module
 export { SecondOrderDynamics } from "./secondOrderDynamics.legacy";
