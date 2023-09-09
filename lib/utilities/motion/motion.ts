@@ -26,7 +26,7 @@ export interface MotionCleanup {
 }
 
 export interface MotionEffect {
-  (): Optional<MotionCleanup>;
+  (): Optional<MotionCleanup> | void;
 }
 
 const DEBOUNCE_MS = 100;
@@ -106,7 +106,7 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
 
 function createLifecycle(
   effect: MotionEffect,
-  syncEffectCleanup: (fn?: Optional<MotionCleanup>) => Optional<MotionCleanup>,
+  syncEffectCleanup: (fn?: Optional<MotionCleanup> | void) => Optional<MotionCleanup>,
   cleanup: (destroyed?: boolean) => void
 ) {
   return () => {
