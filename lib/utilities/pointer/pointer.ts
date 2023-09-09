@@ -1,84 +1,87 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import gsap from "gsap";
-import { Observable, fromEvent } from "rxjs";
-import { Motion } from "../motion/motion";
+import { D, F, O, flow, pipe } from "@mobily/ts-belt";
+import { fromEvent, map } from "rxjs";
+import {
+  createCachedMap,
+  createNormalizedVec2,
+  createVec2,
+  getDocumentElement,
+  getGlobalContext,
+  getScreen,
+  readFromMap,
+  writeToMap,
+} from "../../utils";
 
-export class Pointer extends Motion<{ observable?: Observable<MouseEvent> }> {
-  private static _instance: Pointer;
+export { Pointer } from "./pointer.legacy";
 
-  /**
-   * The Pointer class is a utility for interacting with the mouse/pointer.
-   * It extends the Motion class and provides an observable for mouse events.
-   *
-   * This class is implemented as a singleton, meaning only one instance of it exists.
-   * Therefore, it does not need to be instantiated using `new Pointer();`. Instead, use `Pointer.instance`.
-   *
-   * @example
-   * // Create a custom cursor that mirrors the current pointer position.
-   * gsap.ticker.add(() => {
-   *    gsap.set("#custom-cursor", {
-   *      x: Pointer.instance.clientX,
-   *      y: Pointer.instance.clientY
-   *    })
-   * })
-   */
-  private constructor() {
-    super(
-      (motion) => {
-        // Create an observable for mousemove events
-        motion.meta.observable = fromEvent<MouseEvent>(window, "mousemove");
+export const mousePosition = F.once(() => {
+  const readFromMouseCache = pipe(getMouseCache(), readFromMap);
+  const writeToMouseCache = pipe(getMouseCache(), writeToMap);
+  const readFromDimensionsCache = pipe(getDimensionsCache(), readFromMap);
+  const writeToDimensionsCache = pipe(getDimensionsCache(), writeToMap);
 
-        // Subscribe to the observable and update the pointer's position and normalized position on each event
-        motion.subscriptions.push(
-          motion.meta.observable.subscribe((event) => {
-            this.clientX = event.clientX;
-            this.clientY = event.clientY;
-            this.normalX = gsap.utils.mapRange(0, this.viewWidth, 0, 1, this.clientX);
-            this.normalY = gsap.utils.mapRange(0, this.viewHeight, 0, 1, this.clientY);
-          })
-        );
+  const dimensions$ = fromEvent<UIEvent>(globalThis, "resize", { passive: true }).pipe(
+    map(createDimensions)
+  );
 
-        // Subscribe to window resize events and update the view dimensions
-        motion.subscriptions.push(
-          fromEvent(window, "resize").subscribe(() => {
-            this.viewWidth = window.innerWidth;
-            this.viewHeight = window.innerHeight;
-          })
-        );
+  const mouse$ = fromEvent<MouseEvent>(globalThis, "mousemove", { passive: true }).pipe(
+    map(createMousePositionsFromEvent)
+  );
 
-        motion.meta.label = "Pointer";
-      },
-      { watchMedia: "(pointer: fine)" }
-    );
-  }
+  mouse$.subscribe(
+    flow(
+      D.mapWithKey((key, value) =>
+        pipe(
+          readFromDimensionsCache(key),
+          O.fromNullable,
+          O.map((dim) => createNormalizedVec2(value, dim)),
+          O.tap((nVec2) => writeToMouseCache(key, nVec2))
+        )
+      )
+    )
+  );
 
-  /**
-   * Returns the singleton instance of the Pointer class.
-   * If the instance does not exist, it is created.
-   */
-  static get instance() {
-    return (this._instance ??= new Pointer());
-  }
+  dimensions$.subscribe(flow(D.mapWithKey(writeToDimensionsCache)));
 
-  /** The width of the window's inner viewport */
-  viewWidth = window.innerWidth;
-  /** The height of the window's inner viewport */
-  viewHeight = window.innerHeight;
+  return {
+    get client() {
+      return F.coerce<NormalizedVec2>(readFromMouseCache("client"));
+    },
+    get page() {
+      return F.coerce<NormalizedVec2>(readFromMouseCache("page")!);
+    },
+    get screen() {
+      return F.coerce<NormalizedVec2>(readFromMouseCache("screen")!);
+    },
+  };
+});
 
-  /** The pointer's absolute x-coordinate within the viewport */
-  clientX = this.viewWidth / 2;
-  /** The pointer's absolute y-coordinate within the viewport */
-  clientY = this.viewHeight / 2;
+const getMouseCache = createCachedMap<string, NormalizedVec2>(
+  flow(createDimensions, (dims) => [
+    ["client", createNormalizedVec2(createVec2(0, 0), dims.client)],
+    ["page", createNormalizedVec2(createVec2(0, 0), dims.page)],
+    ["screen", createNormalizedVec2(createVec2(0, 0), dims.screen)],
+  ])
+);
 
-  /** The pointer's x-coordinate normalized to a range of 0 to 1 */
-  normalX = 0.5;
-  /** The pointer's y-coordinate normalized to a range of 0 to 1 */
-  normalY = 0.5;
+const getDimensionsCache = createCachedMap<string, Vec2>(flow(createDimensions, D.toPairs));
 
-  /**
-   * Returns the observable for mouse events.
-   */
-  get observable() {
-    return this.meta.observable;
-  }
+function createMousePositionsFromEvent(
+  event: MouseEvent
+): Record<"client" | "page" | "screen", Vec2> {
+  return {
+    client: createVec2(event.clientX, event.clientY),
+    page: createVec2(event.pageX, event.pageY),
+    screen: createVec2(event.screenX, event.screenY),
+  };
+}
+
+function createDimensions(): Record<"client" | "page" | "screen", Vec2> {
+  const doc = getDocumentElement();
+  const win = getGlobalContext();
+  const screen = getScreen();
+  return {
+    client: createVec2(win().innerWidth, win().innerHeight),
+    page: createVec2(doc().scrollWidth, doc().scrollHeight),
+    screen: createVec2(screen().width, screen().height),
+  };
 }
