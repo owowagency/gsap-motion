@@ -147,7 +147,7 @@ export function roundToDecimalPlaces(decimalPlaceFactor: number = 100) {
   return (n: number) => Math.floor(n * decimalPlaceFactor) / decimalPlaceFactor;
 }
 
-export function tapDebugLog<T, M>(message: M, ...optionalParams: unknown[]) {
+export function tapDebugLog<T, M>(message: M, ...optionalParams: any[]) {
   return F.tap<T>(import.meta.env.DEV ? () => console.log(message, ...optionalParams) : F.ignore);
 }
 

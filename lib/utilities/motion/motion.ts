@@ -10,7 +10,7 @@ import {
   tapDebugLog,
 } from "../../utils";
 import { gsap } from "gsap";
-import { Observable, debounceTime } from "rxjs";
+import { Observable, debounceTime, skip } from "rxjs";
 
 export type MotionObservableElement = string | Element | null;
 
@@ -68,14 +68,16 @@ export function createMotion(
   const getMatchMedia = F.once(() => gsap.matchMedia());
   const getElementResizeObservable = createMemoizedElementsResizeObservable();
 
-  const subscribeWithEffect = <T>(observable: Observable<T>) => {
-    return pipe(
-      observable
-        .pipe(debounceTime(300))
-        .subscribe(flow(runEffect, tapDebugLog("run effect from subscription"))),
-      tapDebugLog("subscribe with effect")
-    );
-  };
+  const subscribeWithEffect =
+    (options?: { skip?: number; debounce?: number }) =>
+    <T>(observable: Observable<T>) => {
+      return pipe(
+        observable
+          .pipe(skip(options?.skip ?? 0), debounceTime(options?.debounce ?? 300))
+          .subscribe(flow(runEffect, tapDebugLog("run effect from subscription"))),
+        tapDebugLog("subscribe with effect")
+      );
+    };
 
   const runEffectCleanup = () => effectCleanupFn?.(false);
 
@@ -93,7 +95,8 @@ export function createMotion(
     ),
     tapDebugLog("create effect runner"),
     R.fromPredicate(() => config.enable ?? true, "Motion disabled"),
-    R.match(F.identity, () => F.ignore)
+    R.match(F.identity, () => F.ignore),
+    F.coerce<() => void>
   );
 
   const resizeElements = pipe(
@@ -108,7 +111,7 @@ export function createMotion(
     resizeElements,
     R.fromPredicate(A.isNotEmpty, "No elements to observe."),
     R.map(getElementResizeObservable),
-    R.map(flow(subscribeWithEffect, tapDebugLog("subscribe to element resizes"))),
+    R.map(flow(subscribeWithEffect({ skip: 1 }), tapDebugLog("subscribe to element resizes"))),
     R.tapError(debugLog)
   );
 
@@ -116,7 +119,7 @@ export function createMotion(
     config.observeWindowResize,
     R.fromPredicate(Boolean, "Window resize observing disabled."),
     R.map(getWindowResizeObservable),
-    R.map(flow(subscribeWithEffect, tapDebugLog("subscribe to window resize events"))),
+    R.map(flow(subscribeWithEffect(), tapDebugLog("subscribe to window resize events"))),
     R.tapError(debugLog)
   );
 
@@ -144,7 +147,7 @@ export function createMotion(
   }
 
   function init() {
-    F.ifElse(resizeElements, A.isEmpty, runEffect, F.ignore);
+    runEffect();
   }
 
   return destroy;
