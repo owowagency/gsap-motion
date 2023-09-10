@@ -1,24 +1,27 @@
-import { A, B, D, F, G, O, flow, pipe } from "@mobily/ts-belt";
+import { A, B, D, F, G, O, R, flow, pipe } from "@mobily/ts-belt";
 import {
   createMemoizedElementsResizeObservable,
   createMemoizedWindowResizeObservable,
+  debugLog,
   getElement,
   getUndefined,
   getValue,
   printError,
+  tapDebugLog,
 } from "../../utils";
 import { gsap } from "gsap";
 import { Observable, debounceTime } from "rxjs";
 
-type Value<T> = T | (() => T);
 export type MotionObservableElement = string | Element | null;
 
 export type MotionParams = {
-  observeElementResize?: Value<MotionObservableElement | ReadonlyArray<MotionObservableElement>>;
-  observeWindowResize?: Value<boolean>;
-  matchMedia?: Value<string>;
-  enable?: Value<boolean>;
-  revertOnDestroy?: Value<boolean>;
+  observeElementResize?: ValueOrGetter<
+    MotionObservableElement | ReadonlyArray<MotionObservableElement>
+  >;
+  observeWindowResize?: ValueOrGetter<boolean>;
+  matchMedia?: ValueOrGetter<string>;
+  enable?: ValueOrGetter<boolean>;
+  revertOnDestroy?: ValueOrGetter<boolean>;
 };
 
 export type MotionConfig = {
@@ -34,7 +37,11 @@ export interface MotionCleanup {
 }
 
 export interface MotionEffect {
-  (context: gsap.Context): Optional<MotionCleanup> | void;
+  (context: gsap.Context): Maybe<MotionCleanup> | void;
+}
+
+export interface MotionDestroy {
+  (): void;
 }
 
 const getWindowResizeObservable = createMemoizedWindowResizeObservable();
@@ -50,22 +57,31 @@ const getWindowResizeObservable = createMemoizedWindowResizeObservable();
  *
  * @returns A `destroy` function to manually stop and clean up the motion effect.
  */
-export function createMotion(effect: MotionEffect, params: Value<MotionParams> = {}): () => void {
+export function createMotion(
+  effect: MotionEffect,
+  params: ValueOrGetter<MotionParams> = {}
+): MotionDestroy {
   let isDestroyed = false;
-  let effectCleanupFn: Optional<MotionCleanup>;
+  let effectCleanupFn: Maybe<MotionCleanup>;
 
   const config = pipe(params, getValue, D.map(flow(O.fromNullable, getValue))) as MotionConfig;
   const getMatchMedia = F.once(() => gsap.matchMedia());
   const getElementResizeObservable = createMemoizedElementsResizeObservable();
 
   const subscribeWithEffect = <T>(observable: Observable<T>) => {
-    return observable.pipe(debounceTime(100)).subscribe(runEffect);
+    return pipe(
+      observable
+        .pipe(debounceTime(300))
+        .subscribe(flow(runEffect, tapDebugLog("run effect from subscription"))),
+      tapDebugLog("subscribe with effect")
+    );
   };
 
   const runEffectCleanup = () => effectCleanupFn?.(false);
 
-  const runEffect = F.debounce(
+  const runEffect = pipe(
     flow(
+      tapDebugLog("run effect"),
       runEffectCleanup,
       getMatchMedia,
       createGsapContext(config.matchMedia ?? "all", (context) => {
@@ -75,7 +91,9 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
       }),
       F.ignore
     ),
-    0
+    tapDebugLog("create effect runner"),
+    R.fromPredicate(() => config.enable ?? true, "Motion disabled"),
+    R.match(F.identity, () => F.ignore)
   );
 
   const resizeElements = pipe(
@@ -88,14 +106,18 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
 
   const elementResizeSubscription = pipe(
     resizeElements,
-    getElementResizeObservable,
-    subscribeWithEffect
+    R.fromPredicate(A.isNotEmpty, "No elements to observe."),
+    R.map(getElementResizeObservable),
+    R.map(flow(subscribeWithEffect, tapDebugLog("subscribe to element resizes"))),
+    R.tapError(debugLog)
   );
 
   const windowResizeSubscription = pipe(
-    O.fromNullable(B.ifElse(!!config.observeWindowResize, getWindowResizeObservable, getUndefined)),
-    O.map(subscribeWithEffect),
-    O.toUndefined
+    config.observeWindowResize,
+    R.fromPredicate(Boolean, "Window resize observing disabled."),
+    R.map(getWindowResizeObservable),
+    R.map(flow(subscribeWithEffect, tapDebugLog("subscribe to window resize events"))),
+    R.tapError(debugLog)
   );
 
   init();
@@ -110,14 +132,15 @@ export function createMotion(effect: MotionEffect, params: Value<MotionParams> =
       F.when(F.identity, () => {
         isDestroyed = true;
         getMatchMedia().kill(config.revertOnDestroy);
-      })
+      }),
+      tapDebugLog("internal cleanup")
     );
   }
 
   function destroy() {
     internalCleanup?.(true);
-    elementResizeSubscription?.unsubscribe();
-    windowResizeSubscription?.unsubscribe();
+    R.tap(elementResizeSubscription, (sub) => sub.unsubscribe());
+    R.tap(windowResizeSubscription, (sub) => sub.unsubscribe());
   }
 
   function init() {
@@ -133,7 +156,11 @@ function createGsapContext(query: string, fn: gsap.ContextFunc) {
 
 function observeBodyResizeWarning(message: string) {
   return (element: Element) =>
-    B.ifElse(element.tagName === "BODY", printError(`Warning: ${message}`), F.ignore);
+    pipe(
+      B.ifElse(element.tagName === "BODY", () => `Warning: ${message}`, getUndefined),
+      O.fromNullable,
+      O.tap(printError())
+    );
 }
 
 export { Motion } from "./motion.legacy";

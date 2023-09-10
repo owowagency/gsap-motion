@@ -14,8 +14,8 @@ export function getValue<T>(of: T, ...args: any[]): T extends (...args: any[]) =
   return of instanceof Function ? of.call(null, args) : of;
 }
 
-export function printError(message: string) {
-  return () => console.error(message);
+export function printError<T>() {
+  return (message: T) => console.error(String(message));
 }
 
 export function iterableToArray<T>(iterable: Iterable<T>) {
@@ -40,7 +40,25 @@ export function getElement(queryOrElement?: string | Element | null): Element | 
 }
 
 export function queryElement(query: string) {
-  return () => document.querySelector(query);
+  return (root: Maybe<Element | Document> = document) => root?.querySelector(query);
+}
+
+export function createElement(
+  tagName: keyof HTMLElementTagNameMap,
+  options?: ElementCreationOptions
+) {
+  return () => document.createElement(tagName, options);
+}
+
+export function appendToElement(element: Element) {
+  return (...nodes: (string | Node)[]) => {
+    element.append(...nodes);
+    return element;
+  };
+}
+
+export function createDocumentFragment() {
+  return () => document.createDocumentFragment();
 }
 
 export function getGlobalContext() {
@@ -115,3 +133,24 @@ export function createMemoizedElementsResizeObservable() {
 }
 
 export const getUndefined = () => undefined;
+
+export function createContainer<T>(initialValue: T) {
+  let value = initialValue;
+
+  return Object.freeze({
+    getValue: () => value,
+    setValue: (newValue: T) => (value = newValue),
+  });
+}
+
+export function roundToDecimalPlaces(decimalPlaceFactor: number = 100) {
+  return (n: number) => Math.floor(n * decimalPlaceFactor) / decimalPlaceFactor;
+}
+
+export function tapDebugLog<T, M>(message: M, ...optionalParams: unknown[]) {
+  return F.tap<T>(import.meta.env.DEV ? () => console.log(message, ...optionalParams) : F.ignore);
+}
+
+export function debugLog<T>(message: T, ...optionalParams: unknown[]) {
+  import.meta.env.DEV && console.log(message, ...optionalParams);
+}
