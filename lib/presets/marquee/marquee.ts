@@ -1,207 +1,312 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Motion, MotionParams } from "../..";
 import gsap from "gsap";
+import { MotionParams, createMotion } from "../../utilities/motion/motion";
+import {
+  appendToElement,
+  createDocumentFragment,
+  createElement,
+  debugLog,
+  getElement,
+  getUndefined,
+  getValue,
+  printError,
+  queryElement,
+  roundToDecimalPlaces,
+  tapDebugLog,
+} from "../../utils";
+import { A, B, D, F, flow, G, O, pipe, R } from "@mobily/ts-belt";
+
+const { wrap, normalize, interpolate } = gsap.utils;
 gsap.registerPlugin(ScrollTrigger);
 
 const MARQUEE_DIRECTION = ["ltr", "rtl", "scroll", "scroll-reverse"] as const;
+const INNER_CONTAINER_STYLE = { display: "inline-flex" };
 
 export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
+export type MarqueeTarget = string | Element | null;
 
-export interface MarqueeSettings {
+export type MarqueeParams = {
+  speed?: ValueOrGetter<number>;
+  scrollVelocity?: ValueOrGetter<number>;
+  direction?: ValueOrGetter<MarqueeDirection>;
+  createDOM?: ValueOrGetter<boolean>;
+  scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
+  onUpdate?: (progress: number) => void;
+  onCreated?: () => void;
+};
+
+type MarqueeConfig = {
   speed?: number;
-  velocity?: number;
+  scrollVelocity?: number;
   direction?: MarqueeDirection;
-  createDOMContainers?: boolean;
-  scrollTrigger?: ScrollTrigger.Vars;
-  onUpdate?(progress: number): void;
-  onCreated?(): void;
+  createDOM?: boolean;
+  scrollTriggerVars?: ScrollTrigger.Vars;
+};
+
+type MarqueeCallbacks = {
+  onUpdate?: (progress: number) => void;
+  onCreated?: () => void;
+};
+
+type MarqueeDOM = {
+  target: Element;
+  innerContainer: Element;
+  outerContainer: Element;
+  targetClone: Element;
+};
+
+type MarqueeDOMRects = {
+  targetRect: DOMRect;
+  innerRect: DOMRect;
+  boundingWidth: number;
+};
+
+type MarqueeInstanceData = {
+  dom: MarqueeDOM;
+  rects: MarqueeDOMRects;
+};
+
+const CLASS_NAME_OUTER = "owow-marquee-outer";
+const CLASS_NAME_INNER = "owow-marquee-inner";
+
+export function createMarquee(
+  target: ValueOrGetter<MarqueeTarget | ReadonlyArray<MarqueeTarget>>,
+  marqueeParams: ValueOrGetter<MarqueeParams> = {},
+  motionParams: ValueOrGetter<MotionParams> = {}
+) {
+  const callbacks: MarqueeCallbacks = pipe(
+    marqueeParams,
+    getValue,
+    D.selectKeys(["onUpdate", "onCreated"])
+  );
+
+  const config = pipe(
+    marqueeParams,
+    getValue,
+    D.deleteKeys(["onUpdate", "onCreated"]),
+    D.map(flow(O.fromNullable, getValue)),
+    F.coerce<MarqueeConfig>
+  );
+
+  const getScrollTrigger = F.once(() => ScrollTrigger.create(config.scrollTriggerVars ?? {}));
+
+  const targets = pipe(
+    A.make(1, getValue(target)),
+    A.flat,
+    A.map(getElement),
+    A.filter(G.isNotNullable)
+  );
+
+  const createInstances = flow(
+    A.map(createMarqueeDOM(config.createDOM ?? true)),
+    A.map(
+      flow(
+        R.map(createMarqueeInstanceData),
+        R.map(createMarqueeInstance(config, callbacks, getScrollTrigger()))
+      )
+    ),
+    tapDebugLog("create marquee instances", { config })
+  );
+
+  const motion = createMotion(() => {
+    const instances = createInstances(targets);
+    return () =>
+      pipe(
+        instances,
+        tapDebugLog("clean up marquee instances"),
+        A.forEach(R.tap((i) => i.revert()))
+      );
+  }, getValue(motionParams));
+
+  return motion;
 }
 
-type MarqueeMeta = Required<MarqueeSettings> & { scrollTrigger: ScrollTrigger; sourceDOM: Node };
+function createMarqueeInstance(
+  config: MarqueeConfig,
+  callbacks: MarqueeCallbacks,
+  scrollTrigger: ScrollTrigger
+) {
+  const getFragment = F.once(createDocumentFragment());
+  let totalContentWidth = 0;
 
-export class Marquee extends Motion<MarqueeMeta & Record<string, unknown>> {
-  static create(
-    target: gsap.DOMTarget | (() => gsap.DOMTarget),
-    settings: MarqueeSettings = {},
-    motionParams: MotionParams = {}
-  ) {
-    return new Marquee(target, settings, motionParams);
-  }
+  return (data: MarqueeInstanceData) => {
+    const fillWithClonesUntilBWidth = (
+      contentWidth = data.rects.innerRect.width,
+      boundingWidth = data.rects.boundingWidth
+    ): R.Result<DocumentFragment, Error> => {
+      return pipe(
+        contentWidth > 0 && boundingWidth > 0,
+        R.fromPredicate(F.identity, new Error("Zero width")),
+        R.map(
+          flow(
+            () => contentWidth <= boundingWidth,
+            B.ifElse(() => {
+              const clone = data.dom.innerContainer.cloneNode(true);
+              totalContentWidth = contentWidth + data.rects.innerRect.width;
+              getFragment().append(clone);
+              fillWithClonesUntilBWidth(totalContentWidth, boundingWidth);
+              return getFragment();
+            }, getFragment)
+          )
+        )
+      );
+    };
 
-  get target(): HTMLElement {
-    return this.meta.target as HTMLElement;
-  }
+    const setContainerX = F.coerce<(n: number) => number>(
+      gsap.quickSetter(data.dom.outerContainer, "x", "px")
+    );
 
-  get speed(): number {
-    return this.meta.speed;
-  }
+    const updateX = flow(roundToDecimalPlaces(1000), setContainerX);
+    const wrapX = wrap(0, -data.rects.innerRect.width);
+    const normalizeX = normalize(0, -data.rects.innerRect.width);
 
-  set speed(n: number) {
-    this.meta.speed = n;
-  }
+    let direction: number,
+      deltaRatio: number,
+      velocityDelta: number,
+      scrollVelocity: number,
+      xCurrent: number,
+      xDelta: number,
+      xIncrement: number,
+      xNext: number;
 
-  get velocity(): number {
-    return this.meta.velocity;
-  }
+    const animate = F.once(() =>
+      gsap.ticker.add(() => {
+        deltaRatio = gsap.ticker.deltaRatio();
 
-  set velocity(n: number) {
-    this.meta.velocity = n;
-  }
-
-  get direction(): MarqueeDirection {
-    return this.meta.direction;
-  }
-
-  set direction(d: MarqueeDirection) {
-    this.meta.direction = d;
-  }
-
-  constructor(
-    target: gsap.DOMTarget | (() => gsap.DOMTarget),
-    settings: MarqueeSettings = {},
-    motionParams: MotionParams = {}
-  ) {
-    super(
-      (motion) => {
-        Object.assign(motion.meta, {
-          speed: settings.speed ?? 1,
-          velocity: settings.velocity ?? 0,
-          direction: settings.direction || "rtl",
-          onCreated: settings.onCreated,
-          onUpdate: settings.onUpdate,
-        });
-
-        motion.meta.scrollTrigger = ScrollTrigger.create(settings.scrollTrigger ?? {});
-
-        let targetContainer: HTMLElement | null = null;
-
-        // get the outer container element
-        if (typeof target === "string") targetContainer = document.querySelector(target);
-        else if (target instanceof HTMLElement) targetContainer = target;
-
-        const doCreateDOMContainers =
-          settings.createDOMContainers != undefined ? settings.createDOMContainers : true;
-
-        const outerContainer = doCreateDOMContainers
-          ? document.createElement("div")
-          : targetContainer?.querySelector<HTMLElement>(".owow-marquee-outer");
-        outerContainer?.classList.add("owow-marquee-outer");
-
-        const innerContainer = doCreateDOMContainers
-          ? document.createElement("div")
-          : outerContainer?.querySelector<HTMLElement>(".owow-marquee-inner");
-        innerContainer?.classList.add("owow-marquee-inner");
-
-        if (!targetContainer || !outerContainer || !innerContainer) {
-          console.error({
-            targetContainer,
-            outerContainer,
-            innerContainer,
-          });
-          throw new Error("Invalid marquee DOM structure");
-        }
-
-        motion.meta.sourceDOM = targetContainer.cloneNode(true);
-        motion.meta.target = targetContainer;
-        innerContainer.append(...targetContainer.childNodes);
-        outerContainer.append(innerContainer);
-        targetContainer?.append(outerContainer);
-
-        gsap.set(innerContainer, { display: "inline-flex" });
-
-        const targetRect = targetContainer.getBoundingClientRect();
-        const innerRect = innerContainer.getBoundingClientRect();
-        const boundingWidth = targetRect.width + innerRect.width;
-        const clones = document.createDocumentFragment();
-        const clonesArray: HTMLElement[] = [];
-        let contentWidthAcc = innerRect.width;
-
-        if (!boundingWidth || !contentWidthAcc) return;
-
-        while (contentWidthAcc <= boundingWidth) {
-          const clone = innerContainer.cloneNode(true);
-          contentWidthAcc += innerRect.width;
-          clonesArray.push(clone as HTMLElement);
-        }
-
-        clones.append(...clonesArray);
-        outerContainer.append(clones);
-
-        const context = gsap.context(() => {
-          gsap.set(outerContainer, {
-            x: 0,
-            force3D: true,
-            width: contentWidthAcc,
-            display: "flex",
-            flexWrap: "nowrap",
-          });
-        });
-
-        const setX = gsap.utils.pipe(
-          (n: number) => Math.floor(n * 1000) / 1000,
-          gsap.quickSetter(outerContainer, "x", "px") as (n: number) => number
+        scrollVelocity = interpolate(
+          scrollVelocity ?? 0,
+          scrollTrigger.getVelocity(),
+          0.5 * deltaRatio
         );
 
-        const wrap = gsap.utils.wrap(0, -innerRect.width);
-        const normalize = gsap.utils.normalize(0, -innerRect.width);
-        let direction: number,
-          scrollVelocity: number,
-          velocityDelta: number,
-          xCurrent: number,
-          xDelta: number,
-          xIncrement: number,
-          xNext: number,
-          deltaRatio: number;
+        velocityDelta = scrollVelocity * (config.scrollVelocity || 0);
 
-        const update = gsap.ticker.add(() => {
-          deltaRatio = gsap.ticker.deltaRatio();
+        switch (config.direction || "rtl") {
+          case "ltr":
+            direction = -1;
+            velocityDelta = -Math.abs(velocityDelta);
+            break;
+          case "rtl":
+            direction = 1;
+            velocityDelta = Math.abs(velocityDelta);
+            break;
+          case "scroll":
+            direction = scrollTrigger.direction ?? 1;
+            break;
+          case "scroll-reverse":
+            direction = -(scrollTrigger.direction ?? 1);
+            velocityDelta = -velocityDelta;
+        }
 
-          scrollVelocity = gsap.utils.interpolate(
-            scrollVelocity ?? 0,
-            motion.meta.scrollTrigger.getVelocity(),
-            0.5 * deltaRatio
-          );
-
-          velocityDelta = scrollVelocity * motion.meta.velocity;
-
-          switch (motion.meta.direction) {
-            case "ltr":
-              direction = -1;
-              velocityDelta = -Math.abs(velocityDelta);
-              break;
-            case "rtl":
-              direction = 1;
-              velocityDelta = Math.abs(velocityDelta);
-              break;
-            case "scroll":
-              direction = motion.meta.scrollTrigger.direction ?? 1;
-              break;
-            case "scroll-reverse":
-              direction = -(motion.meta.scrollTrigger.direction ?? 1);
-              velocityDelta = -velocityDelta;
-          }
-
-          xCurrent = gsap.getProperty(outerContainer, "x") as number;
-          xDelta = motion.meta.speed * -direction;
-          xIncrement = (xDelta - velocityDelta) * deltaRatio;
-          xNext = wrap(xCurrent + xIncrement);
-          setX(xNext);
-          motion.meta.onUpdate?.(normalize(xNext));
-        });
-
-        motion.meta.onCreated?.();
-
-        return () => {
-          context.kill(true);
-          gsap.ticker.remove(update);
-          targetContainer?.replaceChildren(...motion.meta.sourceDOM.childNodes);
-          while (clonesArray.length) clonesArray.pop()?.remove();
-        };
-      },
-      {
-        shouldResetOnResize: [document.body, "horizontal"],
-        ...motionParams,
-      }
+        xCurrent = gsap.getProperty(data.dom.outerContainer, "x") as number;
+        xDelta = (config.speed || 1) * -direction;
+        xIncrement = (xDelta - velocityDelta) * deltaRatio;
+        xNext = wrapX(xCurrent + xIncrement);
+        updateX(xNext);
+        callbacks.onUpdate?.(normalizeX(xNext));
+      })
     );
-  }
+
+    const init = flow(
+      fillWithClonesUntilBWidth,
+      R.map(appendToElement(data.dom.outerContainer)),
+      R.tap((outerContainer) =>
+        gsap.set(outerContainer, {
+          x: 0,
+          force3D: true,
+          width: totalContentWidth,
+          display: "flex",
+          flexWrap: "nowrap",
+        })
+      ),
+      animate,
+      () => callbacks.onCreated?.()
+    );
+
+    init();
+
+    function revert() {
+      debugLog("revert marquee");
+      gsap.ticker.remove(animate());
+      data.dom.target.replaceChildren(...data.dom.targetClone.childNodes);
+    }
+
+    return Object.freeze({ revert });
+  };
 }
+
+function createMarqueeInstanceData(dom: MarqueeDOM): MarqueeInstanceData {
+  return {
+    dom,
+    rects: createMarqueeDOMRects(dom),
+  };
+}
+
+function createMarqueeDOMRects({ target, innerContainer }: MarqueeDOM): MarqueeDOMRects {
+  const targetRect = target.getBoundingClientRect();
+  const innerRect = innerContainer.getBoundingClientRect();
+  return {
+    targetRect,
+    innerRect,
+    boundingWidth: targetRect.width + innerRect.width,
+  };
+}
+
+function createMarqueeDOM(createDOM?: boolean) {
+  const handleError = printError<Error>();
+
+  return (target: Element): R.Result<MarqueeDOM, Error> => {
+    const outerContainer = pipe(
+      target,
+      getContainerElement(!!createDOM, CLASS_NAME_OUTER),
+      R.tapError(handleError)
+    );
+
+    const innerContainer = pipe(
+      outerContainer,
+      R.flatMap(getContainerElement(!!createDOM, CLASS_NAME_INNER)),
+      R.tapError(handleError)
+    );
+
+    const result = pipe(
+      [outerContainer, innerContainer],
+      A.map(R.toOption),
+      ([a, b]) => O.zip(a, b),
+      O.flatMap(([outerContainer, innerContainer]) => ({
+        target,
+        outerContainer,
+        innerContainer,
+        targetClone: F.coerce<typeof target>(target.cloneNode(true)),
+      })),
+      O.tap(({ target, innerContainer, outerContainer }) => {
+        F.when(!!createDOM, Boolean, () => {
+          innerContainer.append(...target.childNodes);
+          outerContainer.append(innerContainer);
+          target.append(outerContainer);
+        });
+        gsap.set(innerContainer, INNER_CONTAINER_STYLE);
+      }),
+      R.fromNullable(new Error("Invalid marquee DOM.")),
+      R.tapError(handleError)
+    );
+
+    return result;
+  };
+}
+
+function getContainerElement(createDOM: boolean, className: string) {
+  return flow(
+    F.ifElse(() => createDOM, createElement("div"), queryElement(`.${className}`)),
+    R.fromNullable(
+      new Error(
+        createDOM
+          ? `Could not create marquee container.`
+          : `Could not find marquee container .${className}`
+      )
+    ),
+    R.tap((el) => el.classList.add(className))
+  );
+}
+
+// export legacy
+export { Marquee } from "./marquee.legacy";
