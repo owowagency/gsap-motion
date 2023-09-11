@@ -40,13 +40,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v1
 
+      - name: Create .nojekyll file
+        run: touch docs-pages/.nojekyll
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v1.0.8
         with:
           path: "docs-pages"
-
-      - name: Create .nojekyll file
-        run: touch docs-pages/.nojekyll
 
       - name: Deploy to GitHub Pages
         id: deployment
