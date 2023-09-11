@@ -5,7 +5,8 @@
     "module": "ESNext",
     "experimentalDecorators": true,
     "types": [
-      "vite/client"
+      "vite/client",
+      "node"
     ],
     "lib": [
       "ES2020",
@@ -23,7 +24,15 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    /* paths */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./lib/*"
+      ]
+    }
   },
   "include": [
     "lib"

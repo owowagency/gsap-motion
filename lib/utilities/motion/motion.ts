@@ -1,230 +1,132 @@
-import { debounceTime, fromEvent, noop, Observable } from "rxjs";
-import type { Subscriber, Subscription } from "rxjs";
-import debounce from "lodash.debounce";
-import gsap from "gsap";
-import { getValue } from "../../utils";
+import { A, B, D, F, G, O, R, flow, pipe } from "@mobily/ts-belt";
+import { BehaviorSubject, Observable, debounceTime, skip } from "rxjs";
+import {
+  createMemoizedElementsResizeObservable,
+  createMemoizedWindowResizeObservable,
+} from "@/core/events";
+import { getValue } from "@/core/common";
+import { tapDebugLog, debugLog, printError } from "@/core/console";
+import { createContainer, getUndefined } from "@/core/data";
+import { getElement } from "@/core/dom";
 
 export type MotionParams = {
-  watchMedia?: string | (() => string);
-  shouldResetOnResize?: MotionWatchResizeTarget | (() => MotionWatchResizeTarget);
-  enable?: boolean | (() => boolean);
+  observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
+  observeWindowResize?: ValueOrGetter<boolean>;
+  debounceTime?: ValueOrGetter<number>;
+  enable?: ValueOrGetter<boolean>;
 };
 
-export type MotionWatchResizeAxis = "vertical" | "horizontal";
-export type MotionWatchResizeTargetWithAxis = [
-  Window | HTMLElement | string,
-  MotionWatchResizeAxis
-];
-export type MotionWatchResizeTarget =
-  | Window
-  | HTMLElement
-  | string
-  | MotionWatchResizeTargetWithAxis;
-export type MotionCleanup = (context: gsap.Context) => void;
-export type MotionImplementation<T extends Record<string, unknown> = Record<string, unknown>> = (
-  self: Motion<T>,
-  context: gsap.Context
-) => (MotionCleanup | void | undefined) | Promise<MotionCleanup | void | undefined>;
+export type MotionConfig = {
+  observeElementResize?: MotionTarget | ReadonlyArray<MotionTarget>;
+  observeWindowResize?: boolean;
+  debounceTime?: number;
+  enable?: boolean;
+};
 
-export class Motion<Meta extends Record<string, unknown> = Record<string, unknown>> {
-  static readonly resetDebounceTime = 100;
+export interface MotionCleanup {
+  (destroyed: boolean): void;
+}
 
-  /** Target framerate */
-  static readonly referenceFramerate = 60;
+export interface MotionEffect {
+  (): Maybe<MotionCleanup> | void;
+}
 
-  /**
-   * Time between frames in milliseconds based on `Motion.referenceFrameRate`.
-   */
-  static get referenceFrameTime() {
-    return 1000 / this.referenceFramerate;
-  }
+export interface MotionDestroy {
+  (): void;
+}
 
-  /**
-   * Multiplies a given `value` by the current gsap ticker's delta ratio,
-   * so the rate of change will always be consistent even if the frame rate fluctuates.
-   *
-   * Implements `gsap.ticker.deltaRatio()`
-   *
-   * @param value Value to multiply by delta ratio.
-   * @example
-   * // move `myObject` by 3 points on every tick.
-   * myObject.x += Motion.applyDeltaRatio(3);
-   */
-  static applyDeltaRatio(value: number) {
-    return value * gsap.ticker.deltaRatio(this.referenceFramerate);
-  }
+/**
+ * Creates a motion effect with a managed lifecycle. This function initializes, runs, and cleans up the motion effect based on the provided parameters.
+ * It can respond to various triggers such as window resize, element resize, and media query changes.
+ *
+ * The motion effect can be enabled or disabled, and can be set to revert to its initial state upon destruction.
+ *
+ * @param effect - The motion effect to be created and managed.
+ * @param params - The parameters for the motion effect, including triggers and behavior settings.
+ *
+ * @returns A `destroy` function to manually stop and clean up the motion effect.
+ */
+export function createMotion(
+  effect: MotionEffect,
+  params: ValueOrGetter<MotionParams> = {}
+): MotionDestroy {
+  const config = pipe(params, getValue, D.map(flow(O.fromNullable, getValue))) as MotionConfig;
+  const getElementResizeObservable = createMemoizedElementsResizeObservable();
+  const cleanupFn = createContainer<MotionCleanup>(F.ignore);
+  const effectCycle = new BehaviorSubject(effect);
 
-  private context!: gsap.Context;
-  private mediaQueryList?: MediaQueryList;
-  motionResizeObserver?: MotionResizeObserver;
-  meta = {} as Meta & Record<string, unknown>;
-  subscriptions: Subscription[] = [];
+  effectCycle.subscribe(() => {
+    cleanupFn.getValue()(false);
+    cleanupFn.setValue(effect() ?? F.ignore);
+  });
 
-  private create?: MotionImplementation;
-  private cleanup?: MotionCleanup;
-
-  /**
-   * @example
-   * // create a motion controller for a staggered text lines animation
-   * const splitTextMotion = new Motion(
-   *  () => {
-   *    const splitText = new SplitText("my-text", { type: "lines" });
-   *    const tween = gsap.fromTo(splitText.lines, { opacity: 0 }, { opacity: 1, stagger: 0.1 });
-   *
-   *    // return a cleanup function
-   *    return () => {
-   *      tween.revert().kill();
-   *      splitText.revert();
-   *    }
-   *  },
-   *  {
-   *    shouldResetOnResize: [document.body, "horizontal"]
-   *  }
-   * )
-   */
-  constructor(create: MotionImplementation<Meta>, params: MotionParams = {}) {
-    this.observeMedia(getValue(params.watchMedia));
-    this.observeResize(getValue(params.shouldResetOnResize));
-
-    this.create = () => {
-      this.context = gsap.context(noop);
-
-      const shouldCreate = [
-        getValue(params.enable) ?? true,
-        this.mediaQueryList?.matches ?? true,
-      ].every(Boolean);
-
-      const cleanup = shouldCreate ? create(this, this.context) : undefined;
-
-      return cleanup;
+  const subscribeWithEffect =
+    (options?: { skip?: number; debounce?: number; name?: string }) =>
+    <T>(observable: Observable<T>) => {
+      return pipe(
+        observable
+          .pipe(skip(options?.skip ?? 0), debounceTime(options?.debounce ?? 300))
+          .subscribe(
+            flow(tapDebugLog(`run effect from subscription: ${options?.name}`), () =>
+              effectCycle.next(effect)
+            )
+          ),
+        tapDebugLog("subscribe with effect")
+      );
     };
 
-    this.createAndSetCleanup();
-  }
-
-  private createAndSetCleanup() {
-    const creationResult = this.create?.(this, this.context);
-
-    if (creationResult instanceof Promise) {
-      creationResult.then((result) => (this.cleanup = result ?? undefined));
-    } else {
-      this.cleanup = creationResult ?? undefined;
-    }
-  }
-
-  private observeMedia(queryString?: string) {
-    if (!queryString) return;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    this.mediaQueryList = matchMedia(queryString);
-    this.subscriptions.push(fromEvent(this.mediaQueryList, "change").subscribe(() => this.reset()));
-  }
-
-  private observeResize(target?: MotionWatchResizeTarget) {
-    if (!target) return;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    this.motionResizeObserver = new MotionResizeObserver(target);
-    this.subscriptions.push(
-      this.motionResizeObserver.observable.pipe(debounceTime(100)).subscribe(() => this.reset())
-    );
-  }
-
-  /**
-   * Runs the cleanup function and resets this Motion instance.
-   */
-  reset = debounce(
-    () => {
-      this.cleanup?.(this.context);
-      requestAnimationFrame(() => this.createAndSetCleanup());
-    },
-    Motion.resetDebounceTime,
-    { leading: true }
+  const resizeElements = pipe(
+    A.make(1, config.observeElementResize),
+    A.flat,
+    A.map(getElement),
+    A.filter(G.isNotNullable),
+    A.tap(observeBodyResizeWarning("Observing the <body> for resizes may cause chain reactions."))
   );
 
-  /**
-   * Runs the cleanup function and makes this instance elegible for garbage collection.
-   */
-  destroy = () => {
-    this.cleanup?.(this.context);
-    this.cleanup = undefined;
-    this.create = undefined;
-    this.mediaQueryList = undefined;
-    this.motionResizeObserver = undefined;
-    for (const key of Object.keys(this.meta)) delete this.meta[key];
-    while (this.subscriptions.length) this.subscriptions.pop()?.unsubscribe();
-  };
+  const elementResizeSubscription = pipe(
+    resizeElements,
+    R.fromPredicate(A.isNotEmpty, "No elements to observe."),
+    R.map(getElementResizeObservable),
+    R.map(
+      flow(
+        subscribeWithEffect({ debounce: config.debounceTime, skip: 1, name: "element resize" }),
+        tapDebugLog("subscribe to element resizes")
+      )
+    ),
+    R.tapError(debugLog)
+  );
+
+  const windowResizeSubscription = pipe(
+    config.observeWindowResize,
+    R.fromPredicate(Boolean, "Window resize observing disabled."),
+    R.map(getWindowResizeObservable),
+    R.map(
+      flow(
+        subscribeWithEffect({ debounce: config.debounceTime, name: "window resize" }),
+        tapDebugLog("subscribe to window resize events")
+      )
+    ),
+    R.tapError(debugLog)
+  );
+
+  function destroy() {
+    R.tap(elementResizeSubscription, (sub) => sub.unsubscribe());
+    R.tap(windowResizeSubscription, (sub) => sub.unsubscribe());
+    cleanupFn.getValue()(true);
+  }
+
+  return destroy;
 }
 
-class MotionResizeObserver {
-  private axis?: MotionWatchResizeAxis;
-  private target: Window | Element | null;
-  private inlineSize?: number;
-  private blockSize?: number;
+const getWindowResizeObservable = createMemoizedWindowResizeObservable();
 
-  observable: Observable<ResizeObserverEntry[] | UIEvent>;
-
-  constructor(target: MotionWatchResizeTarget) {
-    const [element, axis] = [target].flat() as MotionWatchResizeTargetWithAxis;
-    this.target = typeof element === "string" ? document.querySelector(element) : element;
-    this.axis = axis;
-
-    if (this.target === window) {
-      this.observable = new Observable<UIEvent>((subscriber) => {
-        const handleResize = () => this.handleWindowResize(subscriber);
-        window.addEventListener("resize", handleResize, { passive: true });
-        return () => window.removeEventListener("resize", handleResize);
-      });
-    } else {
-      this.observable = new Observable<ResizeObserverEntry[]>((subscriber) => {
-        const resizeObserver = new ResizeObserver((entries) =>
-          this.handleElementResize(entries, subscriber)
-        );
-        if (this.target) resizeObserver.observe(this.target as Element);
-        return () => resizeObserver.disconnect();
-      });
-    }
-  }
-
-  private handleWindowResize(subscriber: Subscriber<UIEvent>) {
-    this.emit(subscriber, window.innerWidth, window.innerHeight);
-  }
-
-  private handleElementResize(
-    entries: ResizeObserverEntry[],
-    subscriber: Subscriber<ResizeObserverEntry[]>
-  ) {
-    const entry = entries.find((e) => e.target === this.target);
-    if (!entry) return;
-    const { inlineSize, blockSize } = entry.borderBoxSize[0];
-    this.emit(subscriber, inlineSize, blockSize);
-  }
-
-  private emit<T>(subscriber: Subscriber<T>, inlineSize: number, blockSize: number) {
-    const isInlineChanged = inlineSize !== this.inlineSize;
-    const isBlockChanged = blockSize !== this.blockSize;
-    const shouldInitialize = this.inlineSize == null || this.blockSize == null;
-
-    // update sizes
-    this.inlineSize = inlineSize;
-    this.blockSize = blockSize;
-
-    // do not run the subscription first time
-    if (shouldInitialize) return;
-
-    // if should only emit horizontal changes and horizontal size did change
-    if (this.axis === "horizontal" && isInlineChanged) {
-      return subscriber.next();
-    }
-
-    // if should only emit vertical changes and vertical size did change
-    if (this.axis === "vertical" && isBlockChanged) {
-      return subscriber.next();
-    }
-
-    // if should emit on any change, and any axes changed
-    if (!this.axis && (isInlineChanged || isBlockChanged)) {
-      subscriber.next();
-    }
-  }
+function observeBodyResizeWarning(message: string) {
+  return (element: Element) =>
+    pipe(
+      B.ifElse(element.tagName === "BODY", () => `Warning: ${message}`, getUndefined),
+      O.fromNullable,
+      O.tap(printError())
+    );
 }
+
+export { Motion } from "./motion.legacy";

@@ -2,12 +2,16 @@
   "name": "@owowagency/gsap-motion",
   "version": "1.18.0",
   "type": "module",
+  "engines": {
+    "node": ">=18",
+    "npm": ">=9"
+  },
   "files": [
     "dist"
   ],
-  "main": "./dist/gsap-motion.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/gsap-motion.umd.cjs",
   "module": "./dist/gsap-motion.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -18,10 +22,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "semantic-release": "semantic-release",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "@semantic-release/commit-analyzer": "^9.0.2",
@@ -29,35 +30,27 @@
     "@semantic-release/github": "^8.0.7",
     "@semantic-release/npm": "^10.0.3",
     "@semantic-release/release-notes-generator": "^11.0.1",
-    "@storybook/addon-essentials": "^7.0.12",
-    "@storybook/addon-links": "^7.0.12",
-    "@storybook/addon-styling": "^1.0.8",
-    "@storybook/blocks": "^7.0.12",
-    "@storybook/web-components-vite": "^7.0.12",
-    "@types/node": "^20.1.3",
-    "autoprefixer": "^10.4.14",
-    "eslint-plugin-storybook": "^0.6.12",
-    "lit": "^2.7.4",
-    "postcss": "^8.4.23",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "semantic-release": "^21.0.2",
-    "semantic-release-cli": "^5.4.4",
-    "storybook": "^7.0.12",
-    "tailwindcss": "^3.3.2",
-    "typedoc": "^0.24.7",
-    "typedoc-plugin-markdown": "^3.15.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.2",
-    "vite-plugin-dts": "^2.3.0"
-  },
-  "dependencies": {
     "@types/lodash.debounce": "^4.0.7",
+    "@types/node": "^20.1.3",
     "@typescript-eslint/eslint-plugin": "^5.59.5",
     "@typescript-eslint/parser": "^5.59.5",
+    "autoprefixer": "^10.4.14",
     "eslint": "^8.40.0",
-    "lodash.debounce": "^4.0.8",
-    "typedoc-github-wiki-theme": "^1.1.0"
+    "lit": "^2.7.4",
+    "react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "semantic-release-cli": "^5.4.4",
+    "semantic-release": "^21.0.2",
+    "typedoc-plugin-markdown": "^3.15.3",
+    "typedoc": "^0.24.7",
+    "typedoc-github-wiki-theme": "^1.1.0",
+    "typescript": "^5.0.2",
+    "vite-plugin-dts": "^2.3.0",
+    "vite": "^4.3.2"
+  },
+  "dependencies": {
+    "@mobily/ts-belt": "^3.13.1",
+    "lodash.debounce": "^4.0.8"
   },
   "peerDependencies": {
     "gsap": "^3.11.5",

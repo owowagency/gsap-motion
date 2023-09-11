@@ -1,30 +1,22 @@
-export class SecondOrderDynamics {
-  private xp: number; // The previous input value
-  private y: number; // The current position of the object
-  private yd: number; // The current velocity of the object
-  private readonly k1: number; // Constant derived from damping and speed, used in calculations
-  private readonly k2: number; // Constant derived from speed, used in calculations
-  private readonly k3: number; // Constant derived from response, damping and speed, used in calculations
+/**
+ * Function that implements physics based motion, using the Second Order Dynamics model.
+ * Second Order Dynamics are a mathematical model that simulates the behavior of an object by considering forces, acceleration, velocity, and position.
+ * It is used to create realistic animations by accurately representing the movement and forces acting on objects.
+ * @param speed Defines the shape of the motion (default 1)
+ * @param damping Defines how the motion settles over time (default 1)
+ * @param response Defines the acceleration of the motion (default 0)
+ * @param x0 The initial value or starting point of the motion (default 0)
+ */
+export function physicsBasedMotion(speed = 1, damping = 1, response = 0, x0 = 0) {
+  // Compute constants based on the provided parameters
+  const k1 = damping / (Math.PI * speed);
+  const k2 = 1 / (2 * Math.PI * speed * (2 * Math.PI * speed));
+  const k3 = (response * damping) / (2 * Math.PI * speed);
 
-  /**
-   * Second Order Dynamics are a mathematical model that simulates the behavior of an object by considering forces, acceleration, velocity, and position.
-   * It is used to create realistic animations by accurately representing the movement and forces acting on objects.
-   * @param speed Defines the shape of the motion
-   * @param damping Defines how the motion settles over time
-   * @param response Defines the acceleration of the motion
-   * @param x0 The initial value or starting point of the motion
-   */
-  constructor(speed = 1, damping = 1, response = 0, x0 = 0) {
-    // Compute constants based on the provided parameters
-    this.k1 = damping / (Math.PI * speed);
-    this.k2 = 1 / (2 * Math.PI * speed * (2 * Math.PI * speed));
-    this.k3 = (response * damping) / (2 * Math.PI * speed);
-
-    // Initialize variables with the initial value
-    this.xp = x0;
-    this.y = x0;
-    this.yd = 0;
-  }
+  // Initialize variables with the initial value
+  let xp = x0;
+  let y = x0;
+  let yd = 0;
 
   /**
    * Calculates and applies the next position of the object based on the provided step and value.
@@ -33,20 +25,24 @@ export class SecondOrderDynamics {
    * @param xd Optional parameter to provide the velocity
    * @returns The updated position of the object
    */
-  public update(step: number, x: number, xd?: number): number {
-    if (xd === undefined) {
-      // Estimate the velocity if no value is provided
-      xd = (x - this.xp) / step;
-      this.xp = x;
-    }
+  function update(step: number, x: number): number {
+    // Estimate the velocity
+    const xd = (x - xp) / step;
 
     // Clamp k2 to ensure stability during framerate peaks, such as during lag spikes or at very high refresh rates
-    const k2Stable = Math.max(this.k2, (step * step) / 2 + (step * this.k1) / 2, step * this.k1);
+    const k2Stable = Math.max(k2, (step * step) / 2 + (step * k1) / 2, step * k1);
+
+    xp = x;
 
     // Update the position and velocity of the object
-    this.y = this.y + step * this.yd;
-    this.yd = this.yd + (step * (x + this.k3 * xd - this.y - this.k1 * this.yd)) / k2Stable; // Update velocity based on acceleration
+    y = y + step * yd;
+    yd = yd + (step * (x + k3 * xd - y - k1 * yd)) / k2Stable; // Update velocity based on acceleration
 
-    return this.y;
+    return y;
   }
+
+  return Object.freeze({ update });
 }
+
+// legacy module
+export { SecondOrderDynamics } from "./secondOrderDynamics.legacy";

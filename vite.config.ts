@@ -1,13 +1,14 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
+import path from "path";
 import dts from "vite-plugin-dts";
+import { fileURLToPath } from "url";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, "lib/index.ts"),
+      entry: path.resolve(__dirname, "lib/index"),
       name: "gsapMotion",
     },
     rollupOptions: {
@@ -19,14 +20,21 @@ export default defineConfig({
         // for externalized deps
         globals: {
           gsap: "gsap",
+          rxjs: "rxjs",
         },
       },
     },
   },
   plugins: [
     dts({
-      outputDir: resolve(__dirname, "dist"),
+      outputDir: path.resolve(__dirname, "dist"),
       insertTypesEntry: true,
     }),
   ],
+  define: {
+    "process.env": process.env,
+  },
+  resolve: {
+    alias: [{ find: "@", replacement: path.resolve(__dirname, "./lib") }],
+  },
 });

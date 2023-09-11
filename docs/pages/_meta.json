@@ -1,0 +1,14 @@
+{
+  "index": "Introduction",
+  "getting-started": "Get started",
+  "about": {
+    "title": "About",
+    "type": "page"
+  },
+  "contact": {
+    "title": "Made with ❤️ by OWOW ↗",
+    "type": "page",
+    "href": "https://owow.io/",
+    "newWindow": true
+  }
+}
