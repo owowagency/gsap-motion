@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "deploy": "npm run build && touch ./out/.nojekyll && gh-pages -d out -t true"
   },
   "repository": {
     "type": "git",
