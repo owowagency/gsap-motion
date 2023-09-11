@@ -26,4 +26,9 @@ dist-ssr
 # docs (auto generated)
 .github/wiki
 wiki
-docs-pages
+
+# Ignore everything in the docs-pages folder
+docs-pages/*
+
+# But don't ignore .nojekyll
+!docs-pages/.nojekyll
