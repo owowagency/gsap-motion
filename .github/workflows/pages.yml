@@ -28,11 +28,13 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
-        run: cd docs
+        run: |
+          cd docs
           npm ci
 
       - name: Build
-        run: cd docs
+        run: |
+          cd docs
           npm run build
 
       - name: Setup Pages
