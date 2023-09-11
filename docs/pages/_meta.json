@@ -1,15 +1,14 @@
 {
   "index": "Introduction",
-  "another": "Another Page",
-  "advanced": "Advanced (A Folder)",
+  "getting-started": "Get started",
   "about": {
     "title": "About",
     "type": "page"
   },
   "contact": {
-    "title": "Contact ↗",
+    "title": "Made with ❤️ by OWOW ↗",
     "type": "page",
-    "href": "https://twitter.com/shuding_",
+    "href": "https://owow.io/",
     "newWindow": true
   }
 }

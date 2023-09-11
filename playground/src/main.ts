@@ -24,3 +24,12 @@ import "./style.css";
 
 const diorama1 = createDiorama("#diorama-1", { size: 3, createDOM: false });
 const diorama2 = createDiorama("#diorama-2", {});
+
+onMounted(() => {
+  createMotion(
+    () => {
+      console.log("yeet");
+    },
+    { observeElementResize: "", observeWindowResize: true }
+  );
+});

@@ -1,0 +1,35 @@
+import { Tabs } from "nextra/components";
+
+# Installation
+
+Our library depends on [GSAP](https://greensock.com/) and [RxJS](https://rxjs.dev/) under the hood. So install these along with our library.
+
+<Tabs items={["npm", "yarn", "pnpm"]}>
+  <Tabs.Tab>
+    ```bash
+    npm install @owowagency/gsap-motion gsap rxjs
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```bash
+    yarn add @owowagency/gsap-motion gsap rxjs
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```bash
+    pnpm install @owowagency/gsap-motion gsap rxjs
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## Why GSAP?
+
+In our library, GSAP is used as a foundation for utilities and drop-in preset animation.
+
+GSAP, or GreenSock Animation Platform, is a robust and highly flexible library for JavaScript animations. It's considered the best in the JavaScript ecosystem due to its performance, compatibility, and extensive features. GSAP provides smooth animations by leveraging hardware acceleration and offers a simple API for complex animations. It supports a wide range of targets like CSS properties, SVG, React, canvas libraries, and more. With GSAP, developers can create animations that are highly interactive, precise, and compatible across various browsers and devices.
+
+## Why RxJS?
+
+In our library, RxJS is used for internal state management and handling various browser events and other observer patterns.
+
+RxJS, or Reactive Extensions for JavaScript, is a powerful library that simplifies handling asynchronous or callback-based code using Observables. It's a staple in the JavaScript ecosystem, widely used in various frameworks like Angular, due to its ability to manage complex asynchronous operations efficiently. With RxJS, developers can control multiple events, merge, transform, and even cancel them, making code more readable and maintainable.

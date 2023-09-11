@@ -1,0 +1,95 @@
+import { Code, CopyToClipboard } from "nextra/components";
+
+# Basic usage
+
+## Importing modules
+
+To start using our animation library, you first need to import the necessary utilities and presets. The library is designed to be modular, so you only need to import the parts you need for your project.
+
+```ts copy
+import { Ease } from "@owowagency/gsap-motion";
+
+const halfWay = Ease.inCubic(0.5);
+```
+
+## Your first motion
+
+Why not start with a basic example. We will create a basic tween that infinitely animates the `<body>`'s background color from and to blue.
+
+```ts copy
+import { createMotion } from "@owowagency/gsap-motion";
+import gsap from "gsap";
+
+createMotion(() => {
+  gsap.to("body", {
+    background: "blue",
+    yoyo: true,
+    repeat: -1,
+  });
+});
+```
+
+So what is so special about `createMotion()` in this case? After all, we can achieve the same with simply calling `gsap.to("body", { ... })`.
+
+Indeed, we could achieve the same effect by simply calling `gsap.to("body", { ... })`. However, real-world scenarios often require us to handle more complex situations. These include responding to window or element resizes, applying animations conditionally (for instance, based on media queries), and ensuring proper cleanup after the animations are done.
+
+## A proper example
+
+In the following example, we'll demonstrate a more complex use case. It involves multiple tweens that are conditionally applied to screens wider than 800px, using a media query. The animation is integrated within a Vue component, necessitating tween cleanup upon component unmounting. Additionally, we'll need to reinitialize the tweens when our target element resizes, allowing for necessary recalculations.
+
+```vue
+<template>
+  <div id="container">
+    <div id="bouncy-ball" class="bouncy-ball" />
+  </div>
+</template>
+
+<script>
+import { createMotion } from "@owowagency/gsap-motion";
+import gsap from "gsap";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+
+let destroyMotion;
+
+onMounted(() => {
+  destroyMotion = createMotion(
+    () => {
+      const context = gsap.matchMedia();
+      const bounceRange = window.innerHeight * 0.5;
+      const slideInRange = window.innerWidth * 0.1;
+
+      context.add("(min-width: 800px)", () => {
+        gsap.fromTo(
+          "#container",
+          {
+            x: slideInRange,
+          },
+          {
+            x: 0,
+            duration: 2,
+            ease: "power2.out",
+          }
+        );
+
+        gsap.to("#bouncy-ball", {
+          x: bounceRange,
+          ease: "power2.out",
+          duration: 1,
+          yoyo: true,
+          repeat: -1,
+        });
+      });
+
+      return () => {
+        context.kill(true);
+      };
+    },
+    { observeWindowResize: true }
+  );
+});
+
+onBeforeUnmount(() => {
+  destroyMotion();
+});
+</script>
+```
