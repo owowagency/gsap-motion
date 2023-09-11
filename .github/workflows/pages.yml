@@ -45,6 +45,9 @@ jobs:
         with:
           path: "docs-pages"
 
+      - name: Create .nojekyll file
+        run: touch docs-pages/.nojekyll
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@main
