@@ -15,20 +15,29 @@ export function getElement(queryOrElement?: string | Element | null): Element | 
 }
 
 export function queryElement(query: string) {
-  return (root: Maybe<Element | Document> = document) => root?.querySelector(query);
+  return (root: Maybe<Element | Document> = document) => {
+    console.log({ root });
+    return root?.querySelector(query);
+  };
 }
 
-export function createElement(
-  tagName: keyof HTMLElementTagNameMap,
+export function createElement<K extends keyof HTMLElementTagNameMap>(
+  tagName: K,
   options?: ElementCreationOptions
 ) {
-  return () => document.createElement(tagName, options);
+  return (): HTMLElementTagNameMap[K] => document.createElement(tagName, options);
 }
 
 export function appendToElement(element: Element) {
   return (...nodes: (string | Node)[]) => {
     element.append(...nodes);
     return element;
+  };
+}
+
+export function replaceElement(element: Element) {
+  return (...nodes: (string | Node)[]) => {
+    element.replaceWith(...nodes);
   };
 }
 
@@ -40,4 +49,8 @@ export function getMotionTargets(
   target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>
 ) {
   return pipe(A.make(1, getValue(target)), A.flat, A.map(getElement), A.filter(G.isNotNullable));
+}
+
+export function getParentElement<E extends Element>(element: E) {
+  return () => element.parentElement;
 }
