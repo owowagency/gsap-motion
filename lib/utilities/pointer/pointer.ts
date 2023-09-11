@@ -1,17 +1,12 @@
 import { D, F, O, flow, pipe } from "@mobily/ts-belt";
 import { map } from "rxjs";
 import {
-  createCachedMap,
-  createNormalizedVec2,
-  createVec2,
-  createMemoizedWindowResizeObservable,
-  getDocumentElement,
-  getGlobalContext,
-  getScreen,
-  readFromMap,
-  writeToMap,
   createMemoizedMousemoveObservable,
-} from "../../utils";
+  createMemoizedWindowResizeObservable,
+} from "@/core/events";
+import { getDocumentElement, getGlobalContext, getScreen } from "@/core/common";
+import { readFromMap, writeToMap, createCachedMap } from "@/core/data";
+import { createNormalizedVec2, createVec2 } from "@/core/vectors";
 
 export { Pointer } from "./pointer.legacy";
 

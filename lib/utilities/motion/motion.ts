@@ -1,30 +1,23 @@
 import { A, B, D, F, G, O, R, flow, pipe } from "@mobily/ts-belt";
+import { BehaviorSubject, Observable, debounceTime, skip } from "rxjs";
 import {
-  createContainer,
   createMemoizedElementsResizeObservable,
   createMemoizedWindowResizeObservable,
-  debugLog,
-  getElement,
-  getUndefined,
-  getValue,
-  printError,
-  tapDebugLog,
-} from "../../utils";
-import { BehaviorSubject, Observable, debounceTime, skip } from "rxjs";
-
-export type MotionObservableElement = string | Element | null;
+} from "@/core/events";
+import { getValue } from "@/core/common";
+import { tapDebugLog, debugLog, printError } from "@/core/console";
+import { createContainer, getUndefined } from "@/core/data";
+import { getElement } from "@/core/dom";
 
 export type MotionParams = {
-  observeElementResize?: ValueOrGetter<
-    MotionObservableElement | readonly MotionObservableElement[]
-  >;
+  observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
   observeWindowResize?: ValueOrGetter<boolean>;
   debounceTime?: ValueOrGetter<number>;
   enable?: ValueOrGetter<boolean>;
 };
 
 export type MotionConfig = {
-  observeElementResize?: MotionObservableElement | ReadonlyArray<MotionObservableElement>;
+  observeElementResize?: MotionTarget | ReadonlyArray<MotionTarget>;
   observeWindowResize?: boolean;
   debounceTime?: number;
   enable?: boolean;
@@ -41,8 +34,6 @@ export interface MotionEffect {
 export interface MotionDestroy {
   (): void;
 }
-
-const getWindowResizeObservable = createMemoizedWindowResizeObservable();
 
 /**
  * Creates a motion effect with a managed lifecycle. This function initializes, runs, and cleans up the motion effect based on the provided parameters.
@@ -126,6 +117,8 @@ export function createMotion(
 
   return destroy;
 }
+
+const getWindowResizeObservable = createMemoizedWindowResizeObservable();
 
 function observeBodyResizeWarning(message: string) {
   return (element: Element) =>

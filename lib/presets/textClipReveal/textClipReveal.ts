@@ -1,8 +1,10 @@
 import { A, D, F, O, R, flow, pipe } from "@mobily/ts-belt";
 import { MotionParams, createMotion } from "../../utilities/motion/motion";
-import { getMotionTargets, getValue, printError } from "../../utils";
 import type { SplitText } from "gsap/all";
 import gsap from "gsap";
+import { getValue } from "@/core/common";
+import { printError } from "@/core/console";
+import { getMotionTargets } from "@/core/dom";
 
 export type TextClipRevealParams = {
   SplitText: typeof SplitText;

@@ -1,6 +1,6 @@
+import { getValue } from "@/core/common";
 import { Motion, MotionParams } from "../../utilities/motion/motion";
 import { gsap } from "gsap";
-import { getValue } from "../../utils";
 import type { SplitText } from "gsap/all";
 
 export type TextClipRevealSettings = {

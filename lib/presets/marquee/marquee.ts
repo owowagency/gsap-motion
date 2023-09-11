@@ -1,19 +1,17 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 import { MotionParams, createMotion } from "../../utilities/motion/motion";
+import { A, B, D, F, flow, O, pipe, R } from "@mobily/ts-belt";
+import { getValue } from "@/core/common";
+import { tapDebugLog, debugLog, printError } from "@/core/console";
 import {
-  appendToElement,
+  getMotionTargets,
   createDocumentFragment,
+  appendToElement,
   createElement,
-  debugLog,
-  getElement,
-  getValue,
-  printError,
   queryElement,
-  roundToDecimalPlaces,
-  tapDebugLog,
-} from "../../utils";
-import { A, B, D, F, flow, G, O, pipe, R } from "@mobily/ts-belt";
+} from "@/core/dom";
+import { roundToDecimalPlaces } from "@/core/numbers";
 
 const { wrap, normalize, interpolate } = gsap.utils;
 gsap.registerPlugin(ScrollTrigger);
@@ -22,7 +20,6 @@ const MARQUEE_DIRECTION = ["ltr", "rtl", "scroll", "scroll-reverse"] as const;
 const INNER_CONTAINER_STYLE = { display: "inline-flex" };
 
 export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
-export type MarqueeTarget = string | Element | null;
 
 export type MarqueeParams = {
   speed?: ValueOrGetter<number>;
@@ -69,7 +66,7 @@ const CLASS_NAME_OUTER = "owow-marquee-outer";
 const CLASS_NAME_INNER = "owow-marquee-inner";
 
 export function createMarquee(
-  target: ValueOrGetter<MarqueeTarget | ReadonlyArray<MarqueeTarget>>,
+  target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>,
   marqueeParams: ValueOrGetter<MarqueeParams> = {},
   motionParams: ValueOrGetter<MotionParams> = {}
 ) {
@@ -89,12 +86,7 @@ export function createMarquee(
 
   const getScrollTrigger = F.once(() => ScrollTrigger.create(config.scrollTriggerVars ?? {}));
 
-  const targets = pipe(
-    A.make(1, getValue(target)),
-    A.flat,
-    A.map(getElement),
-    A.filter(G.isNotNullable)
-  );
+  const targets = getMotionTargets(target);
 
   const createInstances = flow(
     A.map(createMarqueeDOM(config.createDOM ?? true)),
