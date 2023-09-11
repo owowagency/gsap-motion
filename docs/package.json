@@ -4,9 +4,7 @@
   "description": "Nextra docs template",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "deploy": "npm run build && touch ./out/.nojekyll && gh-pages -d out -t true"
+    "build": "next build"
   },
   "repository": {
     "type": "git",
