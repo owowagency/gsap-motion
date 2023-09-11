@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Wiki (auto generated)
+# docs (auto generated)
 .github/wiki
 wiki
+docs-pages
