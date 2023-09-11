@@ -22,7 +22,14 @@
     "noFallthroughCasesInSwitch": true,
     "types": [
       "../lib/global.d.ts"
-    ]
+    ],
+    /* paths */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "../lib/*"
+      ]
+    }
   },
   "include": [
     "src"
