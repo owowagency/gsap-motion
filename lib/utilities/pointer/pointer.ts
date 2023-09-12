@@ -42,10 +42,10 @@ export const mousePosition = F.once(() => {
       return F.coerce<NormalizedVec2>(readFromMouseCache("client"));
     },
     get page() {
-      return F.coerce<NormalizedVec2>(readFromMouseCache("page")!);
+      return F.coerce<NormalizedVec2>(readFromMouseCache("page"));
     },
     get screen() {
-      return F.coerce<NormalizedVec2>(readFromMouseCache("screen")!);
+      return F.coerce<NormalizedVec2>(readFromMouseCache("screen"));
     },
   };
 });
