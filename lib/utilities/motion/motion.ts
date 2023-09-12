@@ -8,6 +8,7 @@ import { getValue } from "@/core/common";
 import { tapDebugLog, debugLog, printError } from "@/core/console";
 import { createContainer, getUndefined } from "@/core/data";
 import { getElement } from "@/core/dom";
+import { ValueOrGetter } from "@/core/valueOrGetterType";
 
 export type MotionTarget = string | Element | null;
 

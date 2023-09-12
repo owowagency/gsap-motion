@@ -12,6 +12,7 @@ import {
   queryElement,
 } from "@/core/dom";
 import { roundToDecimalPlaces } from "@/core/numbers";
+import { ValueOrGetter } from "@/core/valueOrGetterType";
 
 const { wrap, normalize, interpolate } = gsap.utils;
 gsap.registerPlugin(ScrollTrigger);

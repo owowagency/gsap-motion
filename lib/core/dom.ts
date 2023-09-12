@@ -1,6 +1,7 @@
 import { O, flow, G, B, F, pipe, A } from "@mobily/ts-belt";
 import { coerceFn, getValue } from "./common";
 import { MotionTarget } from "@/utilities/motion/motion";
+import { ValueOrGetter } from "./valueOrGetterType";
 
 export function getElement(queryOrElement?: string | Element | null): Element | undefined {
   return pipe(

@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { getValue } from "@/core/common";
 import { printError, tapDebugLog } from "@/core/console";
 import { getMotionTargets } from "@/core/dom";
+import { ValueOrGetter } from "@/core/valueOrGetterType";
 
 export type TextClipRevealParams = {
   SplitText: typeof SplitText;

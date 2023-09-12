@@ -1,7 +1,5 @@
 declare module "*.css?inline";
 
-type ValueOrGetter<T> = T | (() => T);
-
 type Maybe<T> = T | null | undefined;
 type MaybeOrVoid<T> = Maybe<T> | void;
 
