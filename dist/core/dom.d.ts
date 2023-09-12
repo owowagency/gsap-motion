@@ -1,3 +1,4 @@
+import { MotionTarget } from '../utilities/motion/motion';
 export declare function getElement(queryOrElement?: string | Element | null): Element | undefined;
 export declare function getAllElements(query: string): (root?: Document | Element) => Element[];
 export declare function queryElement(query: string): (root?: Element | Document) => Element | null;

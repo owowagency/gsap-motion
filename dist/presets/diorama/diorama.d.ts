@@ -1,4 +1,4 @@
-import { MotionParams, ParallaxParams } from '../../index';
+import { MotionParams, MotionTarget, ParallaxParams } from '../../index';
 export type DioramaParams = {
     createDOM?: ValueOrGetter<boolean>;
     parallaxParams?: ValueOrGetter<ParallaxParams>;

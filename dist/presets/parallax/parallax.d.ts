@@ -1,4 +1,4 @@
-import { MotionParams } from '../../index';
+import { MotionParams, MotionTarget } from '../../index';
 export type ParallaxParams = {
     scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
     speed?: ValueOrGetter<number>;

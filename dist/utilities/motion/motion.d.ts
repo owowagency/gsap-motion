@@ -1,3 +1,4 @@
+export type MotionTarget = string | Element | null;
 export type MotionParams = {
     observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
     observeWindowResize?: ValueOrGetter<boolean>;
