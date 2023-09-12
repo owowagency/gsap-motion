@@ -1,3 +1,4 @@
+import { ValueOrGetter } from '../../core/valueOrGetterType';
 export type MotionTarget = string | Element | null;
 export type MotionParams = {
     observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;

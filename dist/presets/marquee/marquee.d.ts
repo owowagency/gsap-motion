@@ -1,4 +1,5 @@
 import { MotionParams, MotionTarget } from "../../utilities/motion/motion";
+import { ValueOrGetter } from '../../core/valueOrGetterType';
 declare const MARQUEE_DIRECTION: readonly ["ltr", "rtl", "scroll", "scroll-reverse"];
 export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
 export type MarqueeParams = {
