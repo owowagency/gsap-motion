@@ -1,6 +1,7 @@
 {
   "index": "Introduction",
   "getting-started": "Get started",
+  "spec": "API",
   "about": {
     "title": "About",
     "type": "page"

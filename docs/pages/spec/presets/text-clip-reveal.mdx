@@ -1,0 +1,64 @@
+import { Callout } from "nextra/components";
+import { Codepen } from "../../../components/Codepen";
+import ValueOrGetterNotice from "../../../components/ValueOrGetterNotice.mdx";
+
+# Text clip reveal
+
+The `createTextClipReveal()` preset is designed for revealing text in a creative way. It's perfect for titles, headers, or any text that you want to stand out.
+
+<Callout>
+  This effect implements the `SplitText` plugin, which requires a GSAP club membership.
+</Callout>
+
+<Codepen id="BavRYXw" />
+
+## Usage
+
+Our library provides you with a set of sensible defaults, while also offering the flexibility to further customize using a variety of available parameters.
+
+```ts copy
+import SplitText from "gsap/SplitText";
+
+createTextClipReveal(".reveal", {
+  SplitText,
+  fromVars: {
+    opacity: 0,
+  },
+  toVars: {
+    opacity: 1,
+    duration: 2,
+    ease: "expo.inOut",
+  },
+});
+```
+
+## Reference
+
+```ts copy
+createTextClipReveal(target, textClipRevealParams, motionParams);
+```
+
+### Parameters
+
+#### [`target`](https://github.com/owowagency/gsap-motion/wiki#motiontarget)
+
+The target elements to apply the text clip reveal effect to. Can be a single target, or an array of targets.
+
+<ValueOrGetterNotice />
+
+#### [`textClipRevealParams`](https://github.com/owowagency/gsap-motion/wiki#textcliprevealparams)
+
+Optional parameters for the text clip reveal effect, including the SplitText GSAP plugin, split variables
+for child and parent elements, and tween variables for the from and to states of the animation.
+
+<ValueOrGetterNotice />
+
+#### [`motionParams`](https://github.com/owowagency/gsap-motion/wiki/Home#motionparams)
+
+Optional parameters for the motion effect, including triggers and behavior settings.
+
+<ValueOrGetterNotice />
+
+### Returns
+
+A `destroy` function to manually stop and clean up the text clip reveal effect.

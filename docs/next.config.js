@@ -17,7 +17,7 @@ if (isGithubActions) {
 }
 
 module.exports = withNextra({
-  output: "export",
+  output: process.env.NODE_ENV === "production" ? "export" : undefined,
   assetPrefix: assetPrefix,
   basePath: basePath,
   images: {

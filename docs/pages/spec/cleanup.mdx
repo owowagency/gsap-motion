@@ -1,0 +1,23 @@
+import { Callout } from "nextra/components";
+
+# Cleanup
+
+Each preset effect provided by this library, as well as the createMotion function, return a cleanup function. This cleanup function is designed to manage the lifecycle of the motion effect, ensuring that any resources used by the effect are properly released when the effect is no longer needed.
+
+```ts copy
+const myEffect = createMotion(myMotionEffect, myMotionParams);
+// ... some other amazing things happening meanwhile ...
+myEffect(); // Invoke the cleanup function when the effect is no longer needed
+```
+
+<Callout>
+  In this example, myEffect is the cleanup function returned by `createMotion`. When you're done
+  with the motion effect, you simply invoke `myEffect()` to clean up.
+</Callout>
+
+The cleanup function is returned as part of the [MotionDestroy](https://github.com/owowagency/gsap-motion/wiki/MotionDestroy)
+interface, which is a function that takes no arguments and returns no value. When invoked, this function
+will perform any necessary cleanup operations, such as unsubscribing from observables or releasing other
+resources.
+
+This pattern of returning a cleanup function is common in libraries that manage resources (React, Vue, others), as it provides a clear and explicit way for the user of the library to control when resources are released.

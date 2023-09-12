@@ -23,3 +23,6 @@ node_modules
 
 # build files
 out
+
+# gsap club
+src/gsap
