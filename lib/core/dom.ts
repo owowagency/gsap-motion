@@ -1,6 +1,5 @@
 import { O, flow, G, B, F, pipe, A } from "@mobily/ts-belt";
 import { coerceFn, getValue } from "./common";
-import { tapDebugLog } from "./console";
 
 export function getElement(queryOrElement?: string | Element | null): Element | undefined {
   return pipe(
