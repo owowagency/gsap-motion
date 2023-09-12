@@ -1,3 +1,6 @@
+// core
+export * from "./core/valueOrGetterType";
+
 // utils
 export * from "./utilities/easing/easing";
 export * from "./utilities/motion/motion";
