@@ -1,5 +1,6 @@
 import { O, flow, G, B, F, pipe, A } from "@mobily/ts-belt";
 import { coerceFn, getValue } from "./common";
+import { tapDebugLog } from "./console";
 
 export function getElement(queryOrElement?: string | Element | null): Element | undefined {
   return pipe(
@@ -14,10 +15,19 @@ export function getElement(queryOrElement?: string | Element | null): Element | 
   );
 }
 
+export function getAllElements(query: string) {
+  return queryAllElements(query);
+}
+
 export function queryElement(query: string) {
-  return (root: Maybe<Element | Document> = document) => {
-    console.log({ root });
+  return (root: Element | Document = document) => {
     return root?.querySelector(query);
+  };
+}
+
+export function queryAllElements(query: string) {
+  return (root: Element | Document = document) => {
+    return Array.from(root.querySelectorAll(query));
   };
 }
 
@@ -47,8 +57,20 @@ export function createDocumentFragment() {
 
 export function getMotionTargets(
   target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>
-) {
-  return pipe(A.make(1, getValue(target)), A.flat, A.map(getElement), A.filter(G.isNotNullable));
+): readonly Element[] {
+  return pipe(
+    A.make(1, getValue(target)),
+    A.flat,
+    A.map((target) =>
+      pipe(
+        target,
+        G.isString,
+        B.ifElse(queryAllElements(target as string), () => [getElement(target) as Element])
+      )
+    ),
+    A.flat,
+    A.filter(G.isNotNullable)
+  );
 }
 
 export function getParentElement<E extends Element>(element: E) {

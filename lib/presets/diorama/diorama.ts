@@ -72,7 +72,6 @@ export function createDiorama(
         A.map(instances, R.toUndefined),
         A.filter(G.isNotNullable),
         A.forEach(({ dom, outerRect }) => {
-          console.log(dom.outer, outerRect);
           gsap.set(dom.outer, { height: outerRect.height, overflow: "hidden" });
           gsap.set(dom.inner, { height: outerRect.height * size });
         })

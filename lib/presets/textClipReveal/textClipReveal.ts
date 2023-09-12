@@ -3,7 +3,7 @@ import { MotionParams, createMotion } from "../../utilities/motion/motion";
 import type { SplitText } from "gsap/all";
 import gsap from "gsap";
 import { getValue } from "@/core/common";
-import { printError } from "@/core/console";
+import { printError, tapDebugLog } from "@/core/console";
 import { getMotionTargets } from "@/core/dom";
 
 export type TextClipRevealParams = {
@@ -52,6 +52,7 @@ export function createTextClipReveal(
 
   const createInstances = flow(
     getMotionTargets,
+    tapDebugLog("targets"),
     A.map((element) =>
       pipe(
         splitTextPlugin,
