@@ -1,6 +1,6 @@
 import { getValue } from "@/core/common";
 import { getMotionTargets } from "@/core/dom";
-import { MotionParams, createMotion } from "@/index";
+import { MotionParams, MotionTarget, createMotion } from "@/index";
 import { A, D, F, O, flow, pipe } from "@mobily/ts-belt";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";

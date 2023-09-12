@@ -9,6 +9,8 @@ import { tapDebugLog, debugLog, printError } from "@/core/console";
 import { createContainer, getUndefined } from "@/core/data";
 import { getElement } from "@/core/dom";
 
+export type MotionTarget = string | Element | null;
+
 export type MotionParams = {
   observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
   observeWindowResize?: ValueOrGetter<boolean>;

@@ -1,7 +1,7 @@
 import { getValue } from "@/core/common";
 import { printError } from "@/core/console";
 import { createElement, getMotionTargets, replaceElement } from "@/core/dom";
-import { MotionParams, ParallaxParams, createMotion, createParallax } from "@/index";
+import { MotionParams, MotionTarget, ParallaxParams, createMotion, createParallax } from "@/index";
 import { D, flow, O, F, pipe, A, R, G } from "@mobily/ts-belt";
 import { gsap } from "gsap";
 
