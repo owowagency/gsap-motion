@@ -6,7 +6,7 @@ import {
 } from "@/core/events";
 import { getDocumentElement, getGlobalContext, getScreen } from "@/core/common";
 import { readFromMap, writeToMap, createCachedMap } from "@/core/data";
-import { createNormalizedVec2, createVec2 } from "@/core/vectors";
+import { NormalizedVec2, Vec2, createNormalizedVec2, createVec2 } from "@/core/vectors";
 
 export { Pointer } from "./pointer.legacy";
 
