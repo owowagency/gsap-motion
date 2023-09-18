@@ -1,4 +1,5 @@
 export * from "./core/valueOrGetterType";
+export type { Vec2, NormalizedVec2 } from "./core/vectors";
 export * from "./utilities/easing/easing";
 export * from "./utilities/motion/motion";
 export * from "./utilities/pointer/pointer";
