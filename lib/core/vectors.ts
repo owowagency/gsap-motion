@@ -1,3 +1,6 @@
+export type Vec2 = { x: number; y: number };
+export type NormalizedVec2 = { x: number; y: number; nx: number; ny: number };
+
 export function createVec2(x: number, y: number): Vec2 {
   return { x, y };
 }

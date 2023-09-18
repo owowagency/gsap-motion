@@ -1,5 +1,6 @@
 // core
 export * from "./core/valueOrGetterType";
+export type { Vec2, NormalizedVec2 } from "./core/vectors";
 
 // utils
 export * from "./utilities/easing/easing";
