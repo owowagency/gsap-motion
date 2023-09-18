@@ -1,7 +1,7 @@
 import { debounceTime, fromEvent, noop, Observable } from "rxjs";
 import type { Subscriber, Subscription } from "rxjs";
 import debounce from "lodash.debounce";
-import gsap from "gsap";
+import { gsap } from "gsap";
 import { getValue } from "@/core/common";
 
 type MotionParams = {

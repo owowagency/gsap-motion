@@ -1,7 +1,7 @@
 import { A, D, F, O, R, flow, pipe } from "@mobily/ts-belt";
 import { MotionParams, MotionTarget, createMotion } from "../../utilities/motion/motion";
 import type { SplitText } from "gsap/all";
-import gsap from "gsap";
+import { gsap } from "gsap";
 import { getValue } from "@/core/common";
 import { printError, tapDebugLog } from "@/core/console";
 import { getMotionTargets } from "@/core/dom";

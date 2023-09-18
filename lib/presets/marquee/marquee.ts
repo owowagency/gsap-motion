@@ -1,5 +1,5 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import gsap from "gsap";
+import { gsap } from "gsap";
 import { MotionParams, MotionTarget, createMotion } from "../../utilities/motion/motion";
 import { A, B, D, F, flow, O, pipe, R } from "@mobily/ts-belt";
 import { getValue } from "@/core/common";

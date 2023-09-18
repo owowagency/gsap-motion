@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import gsap from "gsap";
+import { gsap } from "gsap";
 import { Observable, fromEvent } from "rxjs";
 import { Motion } from "../motion/motion";
 
