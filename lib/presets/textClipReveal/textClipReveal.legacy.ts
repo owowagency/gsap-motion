@@ -31,8 +31,6 @@ export class TextClipReveal extends Motion<{
         throw new Error("SplitText missing.");
       }
 
-      gsap.registerPlugin(SplitText);
-
       const targetElements = gsap.utils.toArray(target);
 
       for (const el of targetElements) {

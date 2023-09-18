@@ -15,7 +15,6 @@ import { roundToDecimalPlaces } from "@/core/numbers";
 import { ValueOrGetter } from "@/core/valueOrGetterType";
 
 const { wrap, normalize, interpolate } = gsap.utils;
-gsap.registerPlugin(ScrollTrigger);
 
 const MARQUEE_DIRECTION = ["ltr", "rtl", "scroll", "scroll-reverse"] as const;
 const INNER_CONTAINER_STYLE = { display: "inline-flex" };

@@ -46,10 +46,7 @@ export function createTextClipReveal(
     F.coerce<TextClipRevealConfig>
   );
 
-  const splitTextPlugin = pipe(
-    R.fromNullable(config.SplitText, new Error("Missing `SplitText` GSAP member plugin.")),
-    R.tap((p) => gsap.registerPlugin(p))
-  );
+  const splitTextPlugin = R.fromNullable(config.SplitText, new Error("Missing `SplitText` GSAP member plugin."));
 
   const createInstances = flow(
     getMotionTargets,

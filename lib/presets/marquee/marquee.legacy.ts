@@ -1,7 +1,6 @@
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Motion, MotionParams } from "../..";
 import gsap from "gsap";
-gsap.registerPlugin(ScrollTrigger);
 
 const MARQUEE_DIRECTION = ["ltr", "rtl", "scroll", "scroll-reverse"] as const;
 

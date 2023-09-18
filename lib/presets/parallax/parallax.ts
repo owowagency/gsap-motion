@@ -19,8 +19,6 @@ type ParallaxConfig = {
   cssUnit?: string;
 };
 
-gsap.registerPlugin(ScrollTrigger);
-
 /**
  * Creates a parallax scrolling effect on the target elements. The parallax effect involves moving the background content at a slower rate than the foreground content, creating an illusion of depth.
  *
