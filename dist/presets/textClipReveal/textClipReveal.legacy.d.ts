@@ -1,5 +1,6 @@
-import { Motion, MotionParams } from "../../utilities/motion/motion";
-import type { SplitText } from "gsap/all";
+import type { SplitText } from 'gsap/all';
+import type { MotionParams } from '../../utilities/motion/motion';
+import { Motion } from '../../utilities/motion/motion';
 export type TextClipRevealSettings = {
     childSplitVars?: SplitText.Vars | (() => SplitText.Vars);
     parentSplitVars?: SplitText.Vars | (() => SplitText.Vars);

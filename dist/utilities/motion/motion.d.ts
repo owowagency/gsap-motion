@@ -1,4 +1,4 @@
-import { ValueOrGetter } from '../../core/valueOrGetterType';
+import type { ValueOrGetter } from '../../core/valueOrGetterType';
 export type MotionTarget = string | Element | null;
 export type MotionParams = {
     observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
@@ -33,4 +33,4 @@ export interface MotionDestroy {
  * @returns A `destroy` function to manually stop and clean up the motion effect.
  */
 export declare function createMotion(effect: MotionEffect, params?: ValueOrGetter<MotionParams>): MotionDestroy;
-export { Motion } from "./motion.legacy";
+export { Motion } from './motion.legacy';

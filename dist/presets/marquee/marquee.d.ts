@@ -1,5 +1,5 @@
-import { MotionParams, MotionTarget } from "../../utilities/motion/motion";
-import { ValueOrGetter } from '../../core/valueOrGetterType';
+import type { MotionParams, MotionTarget } from '../../utilities/motion/motion';
+import type { ValueOrGetter } from '../../core/valueOrGetterType';
 declare const MARQUEE_DIRECTION: readonly ["ltr", "rtl", "scroll", "scroll-reverse"];
 export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
 export type MarqueeParams = {
@@ -23,4 +23,4 @@ export type MarqueeParams = {
  * @returns A `destroy` function to manually stop and clean up the marquee effect.
  */
 export declare function createMarquee(target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>, marqueeParams?: ValueOrGetter<MarqueeParams>, motionParams?: ValueOrGetter<MotionParams>): import("../../utilities/motion/motion").MotionDestroy;
-export { Marquee } from "./marquee.legacy";
+export { Marquee } from './marquee.legacy';

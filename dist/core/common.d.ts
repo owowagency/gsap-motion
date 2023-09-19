@@ -7,7 +7,7 @@
  * @param {...any[]} args - The arguments to pass to the function, if the input is a function.
  * @returns {T extends (...args: any[]) => infer R ? R : T} - The value of the input or the result of the function call.
  */
-export declare function getValue<T>(of: T, ...args: any[]): T extends (...args: any[]) => infer R ? R : T;
+export declare function getValue<T>(of: T, ...args: unknown[]): T extends (...args: unknown[]) => infer R ? R : T;
 export declare function coerceFn<T>(value: unknown): () => T;
 export declare function getGlobalContext(): () => typeof globalThis;
 export declare function getDocumentElement(): () => HTMLElement;

@@ -1,5 +1,6 @@
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Motion, MotionParams } from "../..";
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { MotionParams } from '../..';
+import { Motion } from '../..';
 declare const MARQUEE_DIRECTION: readonly ["ltr", "rtl", "scroll", "scroll-reverse"];
 export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
 export interface MarqueeSettings {

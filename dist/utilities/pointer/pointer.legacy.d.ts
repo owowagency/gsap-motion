@@ -1,5 +1,5 @@
-import { Observable } from "rxjs";
-import { Motion } from "../motion/motion";
+import type { Observable } from 'rxjs';
+import { Motion } from '../motion/motion';
 /**
  * @deprecated This class is deprecated in favour of `getPointer`.
  * The Pointer class is a utility for interacting with the mouse/pointer.

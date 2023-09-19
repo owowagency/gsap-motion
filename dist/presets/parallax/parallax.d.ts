@@ -1,5 +1,5 @@
-import { ValueOrGetter } from '../../core/valueOrGetterType';
-import { MotionParams, MotionTarget } from '../../index';
+import type { ValueOrGetter } from '../../core/valueOrGetterType';
+import type { MotionParams, MotionTarget } from '../../index';
 export type ParallaxParams = {
     scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
     speed?: ValueOrGetter<number>;

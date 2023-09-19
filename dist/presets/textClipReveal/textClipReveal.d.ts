@@ -1,6 +1,6 @@
-import { MotionParams, MotionTarget } from "../../utilities/motion/motion";
-import type { SplitText } from "gsap/all";
-import { ValueOrGetter } from '../../core/valueOrGetterType';
+import type { SplitText } from 'gsap/all';
+import type { MotionParams, MotionTarget } from '../../utilities/motion/motion';
+import type { ValueOrGetter } from '../../core/valueOrGetterType';
 export type TextClipRevealParams = {
     SplitText: typeof SplitText;
     childSplitVars?: ValueOrGetter<SplitText.Vars>;
@@ -20,4 +20,4 @@ export type TextClipRevealParams = {
  * @returns A `destroy` function to manually stop and clean up the text clip reveal effect.
  */
 export declare function createTextClipReveal(target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>, textClipRevealParams: ValueOrGetter<TextClipRevealParams>, motionParams?: ValueOrGetter<MotionParams>): import("../../utilities/motion/motion").MotionDestroy;
-export { TextClipReveal } from "./textClipReveal.legacy";
+export { TextClipReveal } from './textClipReveal.legacy';

@@ -10,4 +10,4 @@
 export declare function physicsBasedMotion(speed?: number, damping?: number, response?: number, x0?: number): Readonly<{
     update: (step: number, x: number) => number;
 }>;
-export { SecondOrderDynamics } from "./secondOrderDynamics.legacy";
+export { SecondOrderDynamics } from './secondOrderDynamics.legacy';

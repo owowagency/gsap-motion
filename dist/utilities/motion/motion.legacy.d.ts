@@ -1,11 +1,11 @@
-import { Observable } from "rxjs";
-import type { Subscription } from "rxjs";
+import { Observable } from 'rxjs';
+import type { Subscription } from 'rxjs';
 type MotionParams = {
     watchMedia?: string | (() => string);
     shouldResetOnResize?: MotionWatchResizeTarget | (() => MotionWatchResizeTarget);
     enable?: boolean | (() => boolean);
 };
-type MotionWatchResizeAxis = "vertical" | "horizontal";
+type MotionWatchResizeAxis = 'vertical' | 'horizontal';
 type MotionWatchResizeTargetWithAxis = [Window | HTMLElement | string, MotionWatchResizeAxis];
 type MotionWatchResizeTarget = Window | HTMLElement | string | MotionWatchResizeTargetWithAxis;
 type MotionCleanup = (context: gsap.Context) => void;

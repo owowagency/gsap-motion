@@ -1,5 +1,5 @@
-import { ValueOrGetter } from '../../core/valueOrGetterType';
-import { MotionParams, MotionTarget, ParallaxParams } from '../../index';
+import type { ValueOrGetter } from '../../core/valueOrGetterType';
+import type { MotionParams, MotionTarget, ParallaxParams } from '../../index';
 export type DioramaParams = {
     createDOM?: ValueOrGetter<boolean>;
     parallaxParams?: ValueOrGetter<ParallaxParams>;
