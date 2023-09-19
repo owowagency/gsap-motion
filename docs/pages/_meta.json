@@ -1,15 +1,15 @@
 {
-  "index": "Introduction",
-  "getting-started": "Get started",
-  "spec": "API",
-  "about": {
-    "title": "About",
-    "type": "page"
-  },
-  "contact": {
-    "title": "Made with ❤️ by OWOW ↗",
-    "type": "page",
-    "href": "https://owow.io/",
-    "newWindow": true
-  }
+    "index": "Introduction",
+    "getting-started": "Get started",
+    "spec": "API",
+    "about": {
+        "title": "About",
+        "type": "page"
+    },
+    "contact": {
+        "title": "Made with ❤️ by OWOW ↗",
+        "type": "page",
+        "href": "https://owow.io/",
+        "newWindow": true
+    }
 }
