@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import type { MotionParams } from '../..';
 import { Motion } from '../..';
 
+gsap.registerPlugin(ScrollTrigger);
 const MARQUEE_DIRECTION = ['ltr', 'rtl', 'scroll', 'scroll-reverse'] as const;
 
 export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
