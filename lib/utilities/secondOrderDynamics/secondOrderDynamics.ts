@@ -9,7 +9,7 @@
  */
 export function createPhysicsBasedMotion(speed = 1, damping = 1, response = 0, x0 = 0) {
     // Compute constants based on the provided parameters
-    const k1 = damping / (Math.PI * speed);
+        const k1 = damping / (Math.PI * speed);
     const k2 = 1 / (2 * Math.PI * speed * (2 * Math.PI * speed));
     const k3 = (response * damping) / (2 * Math.PI * speed);
 
