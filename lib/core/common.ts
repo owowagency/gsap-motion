@@ -1,4 +1,4 @@
-import { A, F, G } from "@mobily/ts-belt";
+import { A, F, G } from '@mobily/ts-belt';
 
 /**
  * This utility function is used to get the value of a given input.
@@ -9,25 +9,29 @@ import { A, F, G } from "@mobily/ts-belt";
  * @param {...any[]} args - The arguments to pass to the function, if the input is a function.
  * @returns {T extends (...args: any[]) => infer R ? R : T} - The value of the input or the result of the function call.
  */
-export function getValue<T>(of: T, ...args: any[]): T extends (...args: any[]) => infer R ? R : T {
-  const isGsapPlugin = A.some(["SplitText"], (xs) => G.isFunction(of) && xs.includes(of.name));
-  return !isGsapPlugin && G.isFunction(of) ? of.call(null, args) : of;
+export function getValue<T>(
+    of: T,
+    ...args: unknown[]
+): T extends (...args: unknown[]) => infer R ? R : T {
+    const isGsapPlugin = A.some(['SplitText'], (xs) => G.isFunction(of) && xs.includes(of.name));
+    return !isGsapPlugin && G.isFunction(of) ? of.call(null, args) : of;
 }
 
 export function coerceFn<T>(value: unknown) {
-  return () => F.coerce<T>(value);
+    return () => F.coerce<T>(value);
 }
 
 export function getGlobalContext() {
-  return F.once(() => globalThis);
+    return F.once(() => globalThis);
 }
 
 export function getDocumentElement() {
-  const globalContext = getGlobalContext();
-  return F.once(() => globalContext().document.documentElement);
+    const globalContext = getGlobalContext();
+
+    return F.once(() => globalContext().document.documentElement);
 }
 
 export function getScreen() {
-  const globalContext = getGlobalContext();
-  return F.once(() => globalContext().screen);
+    const globalContext = getGlobalContext();
+    return F.once(() => globalContext().screen);
 }

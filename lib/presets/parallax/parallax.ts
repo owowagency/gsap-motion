@@ -1,22 +1,23 @@
-import { getValue } from "@/core/common";
-import { getMotionTargets } from "@/core/dom";
-import { ValueOrGetter } from "@/core/valueOrGetterType";
-import { MotionParams, MotionTarget, createMotion } from "@/index";
-import { A, D, F, O, flow, pipe } from "@mobily/ts-belt";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { A, D, F, O, flow, pipe } from '@mobily/ts-belt';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { getValue } from '@/core/common';
+import { getMotionTargets } from '@/core/dom';
+import type { ValueOrGetter } from '@/core/valueOrGetterType';
+import type { MotionParams, MotionTarget } from '@/index';
+import { createMotion } from '@/index';
 
 export type ParallaxParams = {
-  scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
-  speed?: ValueOrGetter<number>;
-  cssUnit?: ValueOrGetter<string>;
-  updater?: (progress: number, speed: number) => number;
+    scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
+    speed?: ValueOrGetter<number>;
+    cssUnit?: ValueOrGetter<string>;
+    updater?: (progress: number, speed: number) => number;
 };
 
 type ParallaxConfig = {
-  scrollTriggerVars?: ScrollTrigger.Vars;
-  speed?: number;
-  cssUnit?: string;
+    scrollTriggerVars?: ScrollTrigger.Vars;
+    speed?: number;
+    cssUnit?: string;
 };
 
 /**
@@ -31,80 +32,82 @@ type ParallaxConfig = {
  * @returns A `destroy` function to manually stop and clean up the parallax effect.
  */
 export function createParallax(
-  target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>,
-  parallaxParams: ValueOrGetter<ParallaxParams> = {},
-  motionParams: MotionParams = {}
+    target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>,
+    parallaxParams: ValueOrGetter<ParallaxParams> = {},
+    motionParams: MotionParams = {},
 ) {
-  const custom = pipe(parallaxParams, getValue, D.selectKeys(["updater"]));
+    const custom = pipe(parallaxParams, getValue, D.selectKeys(['updater']));
 
-  const config = pipe(
-    parallaxParams,
-    getValue,
-    D.deleteKeys(["updater"]),
-    D.map(flow(O.fromNullable, getValue)),
-    F.coerce<ParallaxConfig>
-  );
-
-  const createScrollTriggers = flow(
-    getMotionTargets,
-    A.map((trigger) =>
-      ScrollTrigger.create({
-        trigger,
-        start: "top bottom",
-        end: "bottom top",
-        ...config.scrollTriggerVars,
-      })
-    )
-  );
-
-  const getScrollTriggerProgress = (scrollTrigger: ScrollTrigger) => () => scrollTrigger.progress;
-  const getParallaxPosition =
-    (speed = 1) =>
-    (progress: number) =>
-      custom.updater?.(progress, speed) ?? -progress * 100 * speed;
-
-  const createPositionUpdater = (scrollTrigger: ScrollTrigger, setter: (n: number) => string) =>
-    flow(
-      getScrollTriggerProgress(scrollTrigger),
-      getParallaxPosition(config.speed),
-      setter,
-      F.ignore
+    const config = pipe(
+        parallaxParams,
+        getValue,
+        D.deleteKeys(['updater']),
+        D.map(flow(O.fromNullable, getValue)),
+        F.coerce<ParallaxConfig>,
     );
 
-  const createInstances = flow(
-    createScrollTriggers,
-    A.map((scrollTrigger) => {
-      const quickSetY = F.coerce<(n: number) => string>(
-        gsap.quickSetter(scrollTrigger.trigger!, "y", config.cssUnit ?? "%")
-      );
+    const createScrollTriggers = flow(
+        getMotionTargets,
+        A.map((trigger) =>
+            ScrollTrigger.create({
+                trigger,
+                start: 'top bottom',
+                end: 'bottom top',
+                ...config.scrollTriggerVars,
+            }),
+        ),
+    );
 
-      const quickSetX = F.coerce<(n: number) => string>(
-        gsap.quickSetter(scrollTrigger.trigger!, "x", config.cssUnit ?? "%")
-      );
+    const getScrollTriggerProgress = (scrollTrigger: ScrollTrigger) => () => scrollTrigger.progress;
+    const getParallaxPosition =
+        (speed = 1) =>
+        (progress: number) =>
+            custom.updater?.(progress, speed) ?? -progress * 100 * speed;
 
-      return {
-        scrollTrigger,
-        updateY: createPositionUpdater(scrollTrigger, quickSetY),
-        updateX: createPositionUpdater(scrollTrigger, quickSetX),
-        destroy: () => scrollTrigger.kill(),
-      };
-    })
-  );
+    const createPositionUpdater = (scrollTrigger: ScrollTrigger, setter: (n: number) => string) =>
+        flow(
+            getScrollTriggerProgress(scrollTrigger),
+            getParallaxPosition(config.speed),
+            setter,
+            F.ignore,
+        );
 
-  const motion = createMotion(() => {
-    const instances = createInstances(target);
+    const createInstances = flow(
+        createScrollTriggers,
+        A.map((scrollTrigger) => {
+            const target = F.coerce<Element>(scrollTrigger.trigger);
 
-    const tickHandler = gsap.ticker.add(() => {
-      A.forEach(instances, ({ updateY }) => {
-        updateY();
-      });
-    });
+            const quickSetY = F.coerce<(n: number) => string>(
+                gsap.quickSetter(target, 'y', config.cssUnit ?? '%'),
+            );
 
-    return () => {
-      gsap.ticker.remove(tickHandler);
-      A.forEach(instances, (instance) => instance.destroy());
-    };
-  }, getValue(motionParams));
+            const quickSetX = F.coerce<(n: number) => string>(
+                gsap.quickSetter(target, 'x', config.cssUnit ?? '%'),
+            );
 
-  return motion;
+            return {
+                scrollTrigger,
+                updateY: createPositionUpdater(scrollTrigger, quickSetY),
+                updateX: createPositionUpdater(scrollTrigger, quickSetX),
+                destroy: () => scrollTrigger.kill(),
+            };
+        }),
+    );
+
+    const motion = createMotion(() => {
+        const instances = createInstances(target);
+
+        const tickHandler = gsap.ticker.add(() => {
+            A.forEach(instances, ({ updateY }) => {
+                updateY();
+            });
+        });
+
+        return () => {
+            gsap.ticker.remove(tickHandler);
+            A.forEach(instances, (instance) => instance.destroy());
+        };
+    }, getValue(motionParams));
+
+    return motion;
 }
