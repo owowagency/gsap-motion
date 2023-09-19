@@ -15,7 +15,7 @@ export { Pointer } from './pointer.legacy';
  * Provides a utility for interacting with various types mouse positions; client (window), page and screen.
  * Every type of mouse position also provides a normalized position between 0 and 1.
  */
-export const mousePosition = F.once(() => {
+export const getMousePosition = F.once(() => {
     const readFromMouseCache = pipe(getMouseCache(), readFromMap);
     const writeToMouseCache = pipe(getMouseCache(), writeToMap);
     const readFromDimensionsCache = pipe(getDimensionsCache(), readFromMap);
@@ -50,6 +50,11 @@ export const mousePosition = F.once(() => {
         },
     };
 });
+
+/**
+ * @deprecated Deprecated; renamed to `getMousePosition`
+ */
+export const mousePosition = getMousePosition;
 
 const getWindowResizeObservable = createMemoizedWindowResizeObservable();
 const getMousemoveObservable = createMemoizedMousemoveObservable();
