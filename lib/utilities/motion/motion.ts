@@ -61,7 +61,15 @@ export function createMotion(
 
     effectCycle.subscribe(() => {
         cleanupFn.getValue()(false);
-        cleanupFn.setValue(effect() ?? F.ignore);
+
+        cleanupFn.setValue(
+            F.ifElse(
+                config.enable,
+                (enable) => enable ?? true,
+                () => effect() ?? F.ignore,
+                () => F.ignore,
+            ),
+        );
     });
 
     const subscribeWithEffect =
