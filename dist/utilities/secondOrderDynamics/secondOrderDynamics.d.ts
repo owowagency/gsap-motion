@@ -7,7 +7,11 @@
  * @param response Defines the acceleration of the motion (default 0)
  * @param x0 The initial value or starting point of the motion (default 0)
  */
-export declare function physicsBasedMotion(speed?: number, damping?: number, response?: number, x0?: number): Readonly<{
+export declare function createPhysicsBasedMotion(speed?: number, damping?: number, response?: number, x0?: number): Readonly<{
     update: (step: number, x: number) => number;
 }>;
+/**
+ * @deprecated Deprecated; renamed to `createPhysicsBasedMotion`
+ */
+export declare const physicsBasedMotion: typeof createPhysicsBasedMotion;
 export { SecondOrderDynamics } from './secondOrderDynamics.legacy';
