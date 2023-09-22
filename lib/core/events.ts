@@ -14,7 +14,7 @@ export function createMemoizedWindowResizeObservable() {
     const shouldEmit = createContainer(true);
     const tickDebounce = gsap.ticker.add(() => void shouldEmit.setValue(true));
 
-    const createHandler = F.once((handler: UIEventHandler) => (event: UIEvent) => {
+    const createHandler = (handler: UIEventHandler) => (event: UIEvent) => {
         return pipe(
             shouldEmit.getValue(),
             tapDebugLog,
@@ -23,7 +23,7 @@ export function createMemoizedWindowResizeObservable() {
                 handler(event);
             }),
         );
-    });
+    };
 
     return F.once(() =>
         fromEventPattern(
