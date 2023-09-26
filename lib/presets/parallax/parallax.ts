@@ -36,7 +36,7 @@ gsap.registerPlugin(ScrollTrigger);
 export function createParallax(
     target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>,
     parallaxParams: ValueOrGetter<ParallaxParams> = {},
-    motionParams: MotionParams = {},
+    motionParams: ValueOrGetter<MotionParams> = {},
 ) {
     const custom = pipe(parallaxParams, getValue, D.selectKeys(['updater']));
 

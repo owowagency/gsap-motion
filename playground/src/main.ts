@@ -1,11 +1,22 @@
 import "./style.css";
 
-import { createMarquee, createTextClipReveal } from "../../lib";
-import SplitText from "./gsap/SplitText";
-import { gsap } from "gsap";
+import { createMotion } from "../../lib";
 
-const h1 = document.querySelector("h1");
-console.log({ h1 });
-createMarquee(["h1"], {}, { enable:false });
+const m1 = createMotion(() => {
+  console.log('create m1');
+  return (destroyed) => {
+    console.log('cleanup m1', {destroyed})
+  }
+}, {
+  mediaQueryList: matchMedia("(min-width: 800px)"),
+  observeWindowResize: true
+})
 
-gsap.to("body", { x: 10, force3D: false });
+const m2 = createMotion(() => {
+  console.log('create m2');
+  return (destroyed) => {
+    console.log('cleanup m2', {destroyed})
+  }
+}, {
+  mediaQueryList: matchMedia("(min-width: 900px)")
+})
