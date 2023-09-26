@@ -4,6 +4,7 @@ export type ParallaxParams = {
     scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
     speed?: ValueOrGetter<number>;
     cssUnit?: ValueOrGetter<string>;
+    createDOM?: ValueOrGetter<boolean>;
     updater?: (progress: number, speed: number) => number;
 };
 /**
