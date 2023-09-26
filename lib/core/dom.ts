@@ -88,5 +88,6 @@ export function getNumberFromAttribute(element: Element, attribute: string): Opt
         O.fromNullable(element.getAttribute(attribute)),
         O.map(parseFloat),
         O.flatMap((value) => (isNaN(value) ? O.None : O.Some(value))),
+        O.toUndefined,
     );
 }

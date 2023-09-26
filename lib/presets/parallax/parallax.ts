@@ -1,4 +1,4 @@
-import { A, D, F, O, R, flow, pipe } from '@mobily/ts-belt';
+import { A, D, F, O, flow, pipe } from '@mobily/ts-belt';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getValue } from '@/core/common';
@@ -74,8 +74,7 @@ export function createParallax(
         flow(
             getScrollTriggerProgress(scrollTrigger),
             getParallaxPosition(
-                R.toUndefined(getNumberFromAttribute(target, 'data-parallax-speed')) ??
-                    config.speed,
+                getNumberFromAttribute(target, 'data-parallax-speed') ?? config.speed,
             ),
             setter,
             F.ignore,
