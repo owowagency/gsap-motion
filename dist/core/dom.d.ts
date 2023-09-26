@@ -1,3 +1,4 @@
+import type { Option } from '@mobily/ts-belt';
 import type { ValueOrGetter } from './valueOrGetterType';
 import type { MotionTarget } from '../utilities/motion/motion';
 export declare function getElement(queryOrElement?: string | Element | null): Element | undefined;
@@ -10,3 +11,4 @@ export declare function replaceElement(element: Element): (...nodes: (string | N
 export declare function createDocumentFragment(): () => DocumentFragment;
 export declare function getMotionTargets(target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>): readonly Element[];
 export declare function getParentElement<E extends Element>(element: E): () => HTMLElement | null;
+export declare function getNumberFromAttribute(element: Element, attribute: string): Option<number>;
