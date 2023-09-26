@@ -2798,7 +2798,9 @@ function oa(e, t = {}, r = {}) {
       });
     });
     return () => {
-      M.ticker.remove(h), Ft(g, (d) => d.destroy());
+      M.ticker.remove(h), Ft(g, (d) => {
+        d.revert(), d.destroy();
+      });
     };
   }, Q(r));
 }
