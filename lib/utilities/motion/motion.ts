@@ -2,6 +2,7 @@ import { A, B, D, F, G, O, R, flow, pipe } from '@mobily/ts-belt';
 import type { Observable } from 'rxjs';
 import { BehaviorSubject, debounceTime, skip } from 'rxjs';
 import {
+    createMediaQueryListObservable,
     createMemoizedElementsResizeObservable,
     createMemoizedWindowResizeObservable,
 } from '@/core/events';
@@ -14,17 +15,19 @@ import type { ValueOrGetter } from '@/core/valueOrGetterType';
 export type MotionTarget = string | Element | null;
 
 export type MotionParams = {
-    observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
-    observeWindowResize?: ValueOrGetter<boolean>;
     debounceTime?: ValueOrGetter<number>;
     enable?: ValueOrGetter<boolean>;
+    mediaQueryList?: ValueOrGetter<MediaQueryList>;
+    observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
+    observeWindowResize?: ValueOrGetter<boolean>;
 };
 
 export type MotionConfig = {
-    observeElementResize?: MotionTarget | ReadonlyArray<MotionTarget>;
-    observeWindowResize?: boolean;
     debounceTime?: number;
     enable?: boolean;
+    mediaQueryList?: MediaQueryList;
+    observeElementResize?: MotionTarget | ReadonlyArray<MotionTarget>;
+    observeWindowResize?: boolean;
 };
 
 export interface MotionCleanup {
@@ -63,11 +66,16 @@ export function createMotion(
         cleanupFn.getValue()(false);
 
         cleanupFn.setValue(
-            F.ifElse(
-                config.enable,
-                (enable) => enable ?? true,
-                () => effect() ?? F.ignore,
-                () => F.ignore,
+            pipe(
+                [config.enable ?? true, config.mediaQueryList?.matches ?? true],
+                tapDebugLog('prerequisites'),
+                A.all(Boolean),
+                tapDebugLog('prerequisites matching'),
+                F.ifElse(
+                    (enable) => enable ?? true,
+                    () => effect() ?? F.ignore,
+                    () => F.ignore,
+                ),
             ),
         );
     });
@@ -127,9 +135,23 @@ export function createMotion(
         R.tapError(debugLog),
     );
 
+    const mediaQueryListSubscription = pipe(
+        config.mediaQueryList,
+        R.fromPredicate((value) => !!value, 'Media query observing disabled.'),
+        R.map(createMediaQueryListObservable),
+        R.map(
+            flow(
+                subscribeWithEffect({ debounce: config.debounceTime, name: 'media query change' }),
+                tapDebugLog('subscribe to media query change events'),
+            ),
+        ),
+        R.tapError(debugLog),
+    );
+
     function destroy() {
         R.tap(elementResizeSubscription, (sub) => sub.unsubscribe());
         R.tap(windowResizeSubscription, (sub) => sub.unsubscribe());
+        R.tap(mediaQueryListSubscription, (sub) => sub.unsubscribe());
         cleanupFn.getValue()(true);
     }
 

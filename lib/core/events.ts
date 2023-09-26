@@ -9,6 +9,10 @@ interface UIEventHandler {
     (event: UIEvent): void;
 }
 
+interface MediaQueryListChangeEventHandler {
+    (event: MediaQueryListEvent): void;
+}
+
 export function createMemoizedWindowResizeObservable() {
     const getWindow = getGlobalContext();
     const shouldEmit = createContainer(true);
@@ -26,7 +30,7 @@ export function createMemoizedWindowResizeObservable() {
     };
 
     return F.once(() =>
-        fromEventPattern(
+        fromEventPattern<UIEvent>(
             (handler: UIEventHandler) => {
                 getWindow().addEventListener('resize', createHandler(handler), { passive: true });
             },
@@ -62,4 +66,15 @@ export function createMemoizedElementsResizeObservable() {
 
         return observable$;
     });
+}
+
+export function createMediaQueryListObservable(mediaQueryList: MediaQueryList) {
+    return fromEventPattern(
+        (handler: MediaQueryListChangeEventHandler) => {
+            mediaQueryList.addEventListener('change', handler, { passive: true });
+        },
+        (handler: MediaQueryListChangeEventHandler) => {
+            mediaQueryList.removeEventListener('change', handler);
+        },
+    );
 }
