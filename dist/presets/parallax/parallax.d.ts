@@ -17,4 +17,4 @@ export type ParallaxParams = {
  *
  * @returns A `destroy` function to manually stop and clean up the parallax effect.
  */
-export declare function createParallax(target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>, parallaxParams?: ValueOrGetter<ParallaxParams>, motionParams?: MotionParams): import('../../index').MotionDestroy;
+export declare function createParallax(target: ValueOrGetter<MotionTarget | ReadonlyArray<MotionTarget>>, parallaxParams?: ValueOrGetter<ParallaxParams>, motionParams?: ValueOrGetter<MotionParams>): import('../../index').MotionDestroy;
