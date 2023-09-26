@@ -1,16 +1,18 @@
 import type { ValueOrGetter } from '../../core/valueOrGetterType';
 export type MotionTarget = string | Element | null;
 export type MotionParams = {
-    observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
-    observeWindowResize?: ValueOrGetter<boolean>;
     debounceTime?: ValueOrGetter<number>;
     enable?: ValueOrGetter<boolean>;
+    mediaQueryList?: ValueOrGetter<MediaQueryList>;
+    observeElementResize?: ValueOrGetter<MotionTarget | readonly MotionTarget[]>;
+    observeWindowResize?: ValueOrGetter<boolean>;
 };
 export type MotionConfig = {
-    observeElementResize?: MotionTarget | ReadonlyArray<MotionTarget>;
-    observeWindowResize?: boolean;
     debounceTime?: number;
     enable?: boolean;
+    mediaQueryList?: MediaQueryList;
+    observeElementResize?: MotionTarget | ReadonlyArray<MotionTarget>;
+    observeWindowResize?: boolean;
 };
 export interface MotionCleanup {
     (destroyed: boolean): void;
