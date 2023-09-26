@@ -1,3 +1,4 @@
+import type { Option } from '@mobily/ts-belt';
 import { A, B, F, G, O, flow, pipe } from '@mobily/ts-belt';
 import { coerceFn, getValue } from './common';
 import type { ValueOrGetter } from './valueOrGetterType';
@@ -80,4 +81,12 @@ export function getMotionTargets(
 
 export function getParentElement<E extends Element>(element: E) {
     return () => element.parentElement;
+}
+
+export function getNumberFromAttribute(element: Element, attribute: string): Option<number> {
+    return pipe(
+        O.fromNullable(element.getAttribute(attribute)),
+        O.map(parseFloat),
+        O.flatMap((value) => (isNaN(value) ? O.None : O.Some(value))),
+    );
 }

@@ -1,8 +1,8 @@
-import { A, D, F, O, flow, pipe } from '@mobily/ts-belt';
+import { A, D, F, O, R, flow, pipe } from '@mobily/ts-belt';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getValue } from '@/core/common';
-import { getMotionTargets } from '@/core/dom';
+import { getMotionTargets, getNumberFromAttribute } from '@/core/dom';
 import type { ValueOrGetter } from '@/core/valueOrGetterType';
 import type { MotionParams, MotionTarget } from '@/index';
 import { createMotion } from '@/index';
@@ -66,10 +66,17 @@ export function createParallax(
         (progress: number) =>
             custom.updater?.(progress, speed) ?? -progress * 100 * speed;
 
-    const createPositionUpdater = (scrollTrigger: ScrollTrigger, setter: (n: number) => string) =>
+    const createPositionUpdater = (
+        target: Element,
+        scrollTrigger: ScrollTrigger,
+        setter: (n: number) => string,
+    ) =>
         flow(
             getScrollTriggerProgress(scrollTrigger),
-            getParallaxPosition(config.speed),
+            getParallaxPosition(
+                R.toUndefined(getNumberFromAttribute(target, 'data-parallax-speed')) ??
+                    config.speed,
+            ),
             setter,
             F.ignore,
         );
@@ -89,8 +96,8 @@ export function createParallax(
 
             return {
                 scrollTrigger,
-                updateY: createPositionUpdater(scrollTrigger, quickSetY),
-                updateX: createPositionUpdater(scrollTrigger, quickSetX),
+                updateY: createPositionUpdater(target, scrollTrigger, quickSetY),
+                updateX: createPositionUpdater(target, scrollTrigger, quickSetX),
                 destroy: () => scrollTrigger.kill(),
             };
         }),
