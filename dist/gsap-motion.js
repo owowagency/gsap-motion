@@ -827,7 +827,10 @@ function mn() {
   return Vi(arguments[0], arguments[1], arguments[2]);
 }
 function Q(e, ...t) {
-  return !ps(["SplitText"], (n) => Mi(e) && n.includes(e.name)) && Mi(e) ? e.call(null, t) : e;
+  return !ps(
+    ["SplitText"],
+    (n) => Mi(e) && e.name === n
+  ) && Mi(e) ? e.call(null, t) : e;
 }
 function $s(e) {
   return () => e;
