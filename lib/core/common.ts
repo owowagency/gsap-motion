@@ -13,7 +13,11 @@ export function getValue<T>(
     of: T,
     ...args: unknown[]
 ): T extends (...args: unknown[]) => infer R ? R : T {
-    const isGsapPlugin = A.some(['SplitText'], (xs) => G.isFunction(of) && xs.includes(of.name));
+    const isGsapPlugin = A.some(
+        ['SplitText'],
+        (pluginName) => G.isFunction(of) && of.name === pluginName,
+    );
+
     return !isGsapPlugin && G.isFunction(of) ? of.call(null, args) : of;
 }
 
