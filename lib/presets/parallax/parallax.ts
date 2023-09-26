@@ -130,7 +130,11 @@ export function createParallax(
 
         return () => {
             gsap.ticker.remove(tickHandler);
-            A.forEach(instances, (instance) => instance.destroy());
+
+            A.forEach(instances, (instance) => {
+                instance.revert();
+                instance.destroy();
+            });
         };
     }, getValue(motionParams));
 
