@@ -3270,7 +3270,7 @@ function rc(t, e, r) {
           case "scroll-reverse":
             o = -(r.direction ?? 1), M = -M;
         }
-        C = F.getProperty(s.dom.outerContainer, "x"), C -= k, he = (t.speed || 1) * -o, U = E && p ? 0 : (he - M) * w, X = y(C + U + D), k = D, g(X), (O = e.onUpdate) == null || O.call(e, h(X));
+        C = F.getProperty(s.dom.outerContainer, "x"), C -= k, he = (t.speed ?? 1) * -o, U = E && p ? 0 : (he - M) * w, X = y(C + U + D), k = D, g(X), (O = e.onUpdate) == null || O.call(e, h(X));
       })
     );
     me(
