@@ -1,8 +1,13 @@
+import type IntertiaPlugin from 'gsap/InertiaPlugin';
 import type { MotionParams, MotionTarget } from '../../utilities/motion/motion';
 import type { ValueOrGetter } from '../../core/valueOrGetterType';
 declare const MARQUEE_DIRECTION: readonly ["ltr", "rtl", "scroll", "scroll-reverse"];
 export type MarqueeDirection = (typeof MARQUEE_DIRECTION)[number];
 export type MarqueeParams = {
+    IntertiaPlugin?: typeof IntertiaPlugin;
+    draggable?: ValueOrGetter<boolean>;
+    draggableVars?: ValueOrGetter<Draggable.Vars>;
+    stopOnDrag?: ValueOrGetter<boolean>;
     speed?: ValueOrGetter<number>;
     scrollVelocity?: ValueOrGetter<number>;
     direction?: ValueOrGetter<MarqueeDirection>;

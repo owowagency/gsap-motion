@@ -1,4 +1,4 @@
-import type { SplitText } from 'gsap/all';
+import type { SplitText } from 'gsap/SplitText';
 import type { MotionParams, MotionTarget } from '../../utilities/motion/motion';
 import type { ValueOrGetter } from '../../core/valueOrGetterType';
 export type TextClipRevealParams = {
