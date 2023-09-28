@@ -1,5 +1,5 @@
 import { A, D, F, O, R, flow, pipe } from '@mobily/ts-belt';
-import type { SplitText } from 'gsap/all';
+import type { SplitText } from 'gsap/SplitText';
 import { gsap } from 'gsap';
 import type { MotionParams, MotionTarget } from '../../utilities/motion/motion';
 import { createMotion } from '../../utilities/motion/motion';

@@ -14,7 +14,7 @@ export function getValue<T>(
     ...args: unknown[]
 ): T extends (...args: unknown[]) => infer R ? R : T {
     const isGsapPlugin = A.some(
-        ['SplitText'],
+        ['SplitText', 'InertiaPlugin'],
         (pluginName) => G.isFunction(of) && of.name === pluginName,
     );
 
