@@ -226,7 +226,7 @@ function createMarqueeInstance(
 
                 xCurrent = gsap.getProperty(data.dom.outerContainer, 'x') as number;
                 xCurrent -= xDragPrev;
-                xDelta = (config.speed || 1) * -direction;
+                xDelta = (config.speed ?? 1) * -direction;
                 xIncrement = isDragging && stopOnDrag ? 0 : (xDelta - velocityDelta) * deltaRatio;
                 xNext = wrapX(xCurrent + xIncrement + xDragCurrent);
                 xDragPrev = xDragCurrent;
