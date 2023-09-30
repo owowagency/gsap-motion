@@ -3288,7 +3288,7 @@ function rc(t, e, r) {
       I,
       () => {
         var O;
-        return (O = e.onCreated) == null ? void 0 : O.call(e);
+        return (O = e.onCreated) == null ? void 0 : O.call(e, { draggable: l });
       }
     )();
     function B() {

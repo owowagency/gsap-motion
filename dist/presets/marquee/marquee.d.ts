@@ -1,4 +1,5 @@
 import type IntertiaPlugin from 'gsap/InertiaPlugin';
+import { Draggable } from 'gsap/Draggable';
 import type { MotionParams, MotionTarget } from '../../utilities/motion/motion';
 import type { ValueOrGetter } from '../../core/valueOrGetterType';
 declare const MARQUEE_DIRECTION: readonly ["ltr", "rtl", "scroll", "scroll-reverse"];
@@ -14,7 +15,9 @@ export type MarqueeParams = {
     createDOM?: ValueOrGetter<boolean>;
     scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
     onUpdate?: (progress: number) => void;
-    onCreated?: () => void;
+    onCreated?: (api: {
+        draggable?: Draggable;
+    }) => void;
 };
 /**
  * Creates a marquee animation effect on the target elements. The marquee effect involves moving the content of the target elements horizontally, either to the left or right, in a continuous loop.
