@@ -37,7 +37,7 @@ export type MarqueeParams = {
     createDOM?: ValueOrGetter<boolean>;
     scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
     onUpdate?: (progress: number) => void;
-    onCreated?: () => void;
+    onCreated?: (api: { draggable?: Draggable }) => void;
 };
 
 type MarqueeConfig = {
@@ -54,7 +54,7 @@ type MarqueeConfig = {
 
 type MarqueeCallbacks = {
     onUpdate?: (progress: number) => void;
-    onCreated?: () => void;
+    onCreated?: (api: { draggable?: Draggable }) => void;
 };
 
 type MarqueeDOM = {
@@ -249,7 +249,7 @@ function createMarqueeInstance(
                 }),
             ),
             animate,
-            () => callbacks.onCreated?.(),
+            () => callbacks.onCreated?.({ draggable }),
         );
 
         init();
