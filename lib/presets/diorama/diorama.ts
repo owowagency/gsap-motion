@@ -104,6 +104,7 @@ export function createDiorama(
         return () => {
             setup.kill(true);
             A.forEach(destroyParallax, (destroy) => destroy());
+            A.forEach(instances, flow(R.tap((instance) => instance.revert())));
         };
     }, getValue(motionParams));
 
