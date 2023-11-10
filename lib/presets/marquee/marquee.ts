@@ -105,7 +105,7 @@ export function createMarquee(
     const config = pipe(
         marqueeParams,
         getValue,
-        D.deleteKeys(['onUpdate', 'onCreated']),
+        D.deleteKeys(['onUpdate', 'onCreated', 'beforeCreate']),
         D.map(flow(O.fromNullable, getValue)),
         F.coerce<MarqueeConfig>,
     );
