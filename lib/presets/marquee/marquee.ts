@@ -144,6 +144,8 @@ function createMarqueeInstance(
     callbacks: MarqueeCallbacks,
     scrollTrigger: ScrollTrigger,
 ) {
+    callbacks.beforeCreate?.();
+
     const getFragment = F.once(createDocumentFragment());
     let totalContentWidth = 0;
 
@@ -239,7 +241,6 @@ function createMarqueeInstance(
         );
 
         const init = flow(
-            () => callbacks.beforeCreate?.() ?? undefined,
             fillWithClonesUntilBWidth,
             R.map(appendToElement(data.dom.outerContainer)),
             R.tap((outerContainer) =>
