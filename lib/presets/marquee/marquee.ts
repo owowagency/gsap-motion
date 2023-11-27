@@ -126,6 +126,8 @@ export function createMarquee(
     );
 
     const motion = createMotion(() => {
+        callbacks.beforeCreate?.();
+
         const instances = createInstances(targets);
 
         return () =>
@@ -170,8 +172,6 @@ function createMarqueeInstance(
                 ),
             );
         };
-
-        callbacks.beforeCreate?.();
 
         const draggable = createDraggable(data.dom, config);
 
