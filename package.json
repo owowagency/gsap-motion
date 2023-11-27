@@ -1,6 +1,6 @@
 {
   "name": "@owowagency/gsap-motion",
-  "version": "2.12.1",
+  "version": "2.12.2",
   "type": "module",
   "engines": {
     "node": ">=18",
