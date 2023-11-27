@@ -18,7 +18,9 @@ export type MarqueeParams = {
     onCreated?: (api: {
         draggable?: Draggable;
     }) => void;
+    onDestroyed?: () => void;
     beforeCreate?: () => void;
+    beforeDestroy?: () => void;
 };
 /**
  * Creates a marquee animation effect on the target elements. The marquee effect involves moving the content of the target elements horizontally, either to the left or right, in a continuous loop.
