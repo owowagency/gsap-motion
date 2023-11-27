@@ -144,8 +144,6 @@ function createMarqueeInstance(
     callbacks: MarqueeCallbacks,
     scrollTrigger: ScrollTrigger,
 ) {
-    callbacks.beforeCreate?.();
-
     const getFragment = F.once(createDocumentFragment());
     let totalContentWidth = 0;
 
@@ -172,6 +170,8 @@ function createMarqueeInstance(
                 ),
             );
         };
+
+        callbacks.beforeCreate?.();
 
         const draggable = createDraggable(data.dom, config);
 
