@@ -38,7 +38,9 @@ export type MarqueeParams = {
     scrollTriggerVars?: ValueOrGetter<ScrollTrigger.Vars>;
     onUpdate?: (progress: number) => void;
     onCreated?: (api: { draggable?: Draggable }) => void;
+    onDestroyed?: () => void;
     beforeCreate?: () => void;
+    beforeDestroy?: () => void;
 };
 
 type MarqueeConfig = {
@@ -56,7 +58,9 @@ type MarqueeConfig = {
 type MarqueeCallbacks = {
     onUpdate?: (progress: number) => void;
     beforeCreate?: () => void;
+    beforeDestroy?: () => void;
     onCreated?: (api: { draggable?: Draggable }) => void;
+    onDestroyed?: () => void;
 };
 
 type MarqueeDOM = {
@@ -99,7 +103,7 @@ export function createMarquee(
     const callbacks: MarqueeCallbacks = pipe(
         marqueeParams,
         getValue,
-        D.selectKeys(['onUpdate', 'onCreated', 'beforeCreate']),
+        D.selectKeys(['onUpdate', 'onCreated', 'onDestroyed', 'beforeCreate', 'beforeDestroy']),
     );
 
     const config = pipe(
@@ -130,12 +134,17 @@ export function createMarquee(
 
         const instances = createInstances(targets);
 
-        return () =>
+        return () => {
+            callbacks.beforeDestroy?.();
+
             pipe(
                 instances,
                 tapDebugLog('clean up marquee instances'),
                 A.forEach(R.tap((i) => i.revert())),
             );
+
+            callbacks.onDestroyed?.();
+        };
     }, getValue(motionParams));
 
     return motion;
