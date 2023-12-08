@@ -1,4 +1,5 @@
 import type { ValueOrGetter } from '../../core/valueOrGetterType';
+import type { Maybe } from '../../type-utils';
 export type MotionTarget = string | Element | null;
 export type MotionParams = {
     debounceTime?: ValueOrGetter<number>;
