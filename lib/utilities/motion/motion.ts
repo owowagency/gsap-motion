@@ -11,6 +11,7 @@ import { debugLog, printError, tapDebugLog } from '@/core/console';
 import { createContainer, getUndefined } from '@/core/data';
 import { getElement } from '@/core/dom';
 import type { ValueOrGetter } from '@/core/valueOrGetterType';
+import type { Maybe } from '@/type-utils';
 
 export type MotionTarget = string | Element | null;
 
