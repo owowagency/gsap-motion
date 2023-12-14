@@ -58,9 +58,7 @@ export function createDiorama(
                 Object.freeze({
                     dom,
                     outerRect: dom.outer.getBoundingClientRect(),
-                    revert: () => {
-                        dom.outer.replaceWith(dom.original);
-                    },
+                    revert: () => dom.outer.replaceWith(dom.original),
                 }),
             ),
         ),
@@ -126,6 +124,7 @@ function getDioramaDOM(createDOM: boolean, outerClassName: string, innerClassNam
                 const outerContainer = createOuterContainer();
                 clone.classList.add(innerClassName);
                 outerContainer.append(clone);
+                outerContainer.classList.add(...element.classList);
                 replace(outerContainer);
 
                 return R.Ok({
