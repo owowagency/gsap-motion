@@ -3583,9 +3583,7 @@ function wc(t, e = {}, r = {}) {
         (l) => Object.freeze({
           dom: l,
           outerRect: l.outer.getBoundingClientRect(),
-          revert: () => {
-            l.outer.replaceWith(l.original);
-          }
+          revert: () => l.outer.replaceWith(l.original)
         })
       )
     )
@@ -3633,7 +3631,7 @@ function fc(t, e, r) {
       () => t,
       (i) => {
         const s = il(i), a = i.cloneNode(!0), l = n();
-        return a.classList.add(r), l.append(a), s(l), Hs({
+        return a.classList.add(r), l.append(a), l.classList.add(...i.classList), s(l), Hs({
           inner: a,
           outer: l,
           original: i
